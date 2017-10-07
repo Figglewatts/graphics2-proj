@@ -25,4 +25,8 @@ find_package(OpenGL REQUIRED)
 
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLFW_INCLUDE_DIRS} )
 
-target_link_libraries(graphics2_proj ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES} )
+if(WIN32)
+        target_link_libraries(graphics2_proj ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES})
+else(WIN32)
+        target_link_libraries(graphics2_proj ${OPENGL_LIBRARIES} ${GLFW_STATIC_LIBRARIES})
+endif(WIN32)
