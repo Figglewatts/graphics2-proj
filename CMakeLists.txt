@@ -14,7 +14,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 include_directories(include)
 
 file(GLOB_RECURSE SOURCE_FILES
-        src/*.c
+        deps/*.c
         src/*.cpp
         src/*.h)
 
