@@ -353,3 +353,5 @@ OpenCover/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+log.txt
