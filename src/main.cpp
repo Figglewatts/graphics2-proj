@@ -1,51 +1,29 @@
-#include "glad/glad.h"
-#include <GLFW/glfw3.h>
 #include <iostream>
 
+#include "framework/Application.h"
 #include "framework/util/Logger.h"
+#include "framework/graphics/Color.h"
+
+Framework::Application *app;
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
-	glViewport(0, 0, width, height);
+	app->get_context().viewport(0, 0, width, height);
 }
 
 int main()
 {
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	app = new Framework::Application("Graphics 2 project",
+		3, 2, 800, 600);
 
-	LOG(LogLevel::INFO, "Why is this not working");
-	LOG(LogLevel::WARN, "Oh, it is.");
-	LOG(LogLevel::ERR, "Better not break!!");
-
-	GLFWwindow *window = glfwCreateWindow(800, 600, "Graphics 2 Project", NULL, NULL);
-	if (window == nullptr)
+	app->get_context().clearColor(Framework::Color::BLUE);
+	while (!glfwWindowShouldClose(app->get_window()))
 	{
-		std::cout << "Failed to create GLFW window!" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
-
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD!" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-
-	glViewport(0, 0, 800, 600);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-	while (!glfwWindowShouldClose(window))
-	{
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(app->get_window());
 		glfwPollEvents();
-		glClear(GL_COLOR_BUFFER_BIT);
+		app->get_context().clear(GL_COLOR_BUFFER_BIT);
 	}
-
-	glfwTerminate();
+	
+	delete app;
 	return 0;
 }

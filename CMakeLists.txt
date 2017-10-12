@@ -12,6 +12,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 include_directories(include)
+include_directories(${CMAKE_SOURCE_DIR}/src)
 
 file(GLOB_RECURSE SOURCE_FILES
         deps/*.c

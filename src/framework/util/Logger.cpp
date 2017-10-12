@@ -2,16 +2,18 @@
 #include "date.h"
 #include <chrono>
 #include <iostream>
+#include <cstring>
 
 Logger *Logger::_loggerInstance = nullptr;
-const std::string Logger::LOGFILE_NAME = "log.txt";
+const std::string Logger::LOGFILE_NAME = "app.log";
 
 std::string get_log_level(LogLevel level)
 {
 	return (std::string[]) {
 		"INFO",
 		"WARN",
-		"ERR"
+		"ERROR",
+		"FATAL"
 	}[static_cast<unsigned>(level)];
 }
 
@@ -35,11 +37,12 @@ Logger::~Logger()
 	delete _loggerInstance;
 }
 
-void Logger::Log(char const* function, char const* file,
-	unsigned line, LogLevel level, std::string logmsg)
+void Logger::Log(const std::string& function, const std::string& file,
+	unsigned line, LogLevel level, const std::string& logmsg)
 {
+	std::string filename = (std::strrchr(&file[0], '/') ? std::strrchr(&file[0], '/') + 1 : file);
 	_logfile << date::format("%F %T", std::chrono::system_clock::now()) << " "
-		<< "<" << file << ":"
+		<< "<" << filename << ":"
 		<< function << "()#" << line << "> "
 		<< get_log_level(level) << " | "
 		<< logmsg

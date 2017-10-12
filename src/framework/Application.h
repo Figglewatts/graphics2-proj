@@ -2,7 +2,7 @@
 #define APPLICATION_H
 #pragma once
 
-#include "graphics/GLContext.h"
+#include "framework/graphics/GLContext.h"
 #include <string>
 
 namespace Framework
@@ -13,9 +13,13 @@ namespace Framework
 		GLContext _glContext;
 		GLFWwindow *_window;
 	public:
-		Application(std::string windowTitle, unsigned width, unsigned height);
-		
-		virtual ~Application() {}
+		Application(const std::string& windowTitle, unsigned majVer, 
+			unsigned minVer, unsigned width, unsigned height);
+
+		virtual ~Application();
+
+		inline GLFWwindow *get_window() { return _window; }
+		inline GLContext& get_context() { return _glContext; }
 	};
 }
 
