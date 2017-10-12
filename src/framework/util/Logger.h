@@ -10,16 +10,23 @@
 	{																	\
 		Logger *log = Logger::Instance();								\
 		std::ostringstream __logstream__;								\
-		__logstream__ << std::string(MESSAGE);										\
+		__logstream__ << std::string(MESSAGE);							\
 		log->Log(__func__, __FILE__, __LINE__, L_, __logstream__.str());\
 	} while (0)
 
-enum class LogLevel : unsigned
+enum class LogLevel : unsigned int
 {
-	INFO = 0,
-	WARN = 1,
-	ERROR = 2,
-	FATAL = 3
+	INFO,
+	WARN, 
+	ERR,
+	FATAL
+};
+
+static std::string log_level_strings[] = {
+	"INFO",
+	"WARN",
+	"ERROR",
+	"FATAL"
 };
 
 std::string get_log_level(LogLevel level);

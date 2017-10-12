@@ -16,6 +16,8 @@ int main()
 	app = new Framework::Application("Graphics 2 project",
 		3, 2, 800, 600);
 
+	LOG(LogLevel::INFO, "Test log");
+
 	app->get_context().clearColor(Framework::Color::BLUE);
 	while (!glfwWindowShouldClose(app->get_window()))
 	{

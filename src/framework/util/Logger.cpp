@@ -9,12 +9,7 @@ const std::string Logger::LOGFILE_NAME = "app.log";
 
 std::string get_log_level(LogLevel level)
 {
-	return (std::string[]) {
-		"INFO",
-		"WARN",
-		"ERROR",
-		"FATAL"
-	}[static_cast<unsigned>(level)];
+	return log_level_strings[static_cast<unsigned>(level)];
 }
 
 Logger *Logger::Instance()
@@ -40,7 +35,11 @@ Logger::~Logger()
 void Logger::Log(const std::string& function, const std::string& file,
 	unsigned line, LogLevel level, const std::string& logmsg)
 {
+#ifdef _WIN32
+	std::string filename = (std::strrchr(&file[0], '\\') ? std::strrchr(&file[0], '\\') + 1 : file);
+#else
 	std::string filename = (std::strrchr(&file[0], '/') ? std::strrchr(&file[0], '/') + 1 : file);
+#endif
 	_logfile << date::format("%F %T", std::chrono::system_clock::now()) << " "
 		<< "<" << filename << ":"
 		<< function << "()#" << line << "> "
