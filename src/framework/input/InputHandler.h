@@ -3,6 +3,7 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
+
 #include <map>
 #include <vector>
 
@@ -21,15 +22,14 @@ namespace Framework
 		int code;
 		int stateIndex;
 	};
-	
+
 	class InputHandler
 	{
-	private:	
 		static std::map<std::string, InputButton> inputs;
 		static std::vector<ButtonState> states;
 		static bool keys[348];
 
-		InputHandler(); // can't be instantiated
+		InputHandler() = delete; // you can't instantiate InputHandler
 
 		static void updateButtonState(ButtonState *state, bool button);
 	public:
