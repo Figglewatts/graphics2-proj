@@ -96,7 +96,7 @@ int main()
 
 		accumulator += frameTime;
 
-		// only update at 60fps
+		// only update at specified delta-time
 		while (accumulator >= dt)
 		{
 			InputHandler::handleInput();
