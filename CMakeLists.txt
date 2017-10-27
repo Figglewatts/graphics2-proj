@@ -32,3 +32,5 @@ if(WIN32)
 else(WIN32)
         target_link_libraries(graphics2_proj ${OPENGL_LIBRARIES} ${GLFW_STATIC_LIBRARIES})
 endif(WIN32)
+
+file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

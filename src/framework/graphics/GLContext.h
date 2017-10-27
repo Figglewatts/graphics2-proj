@@ -15,7 +15,7 @@ namespace Framework
 		unsigned _majVersion;
 		GLFWwindow *_window;
 	public:
-		GLContext() : _minVersion(2), _majVersion(3), _window(nullptr) {}
+		GLContext() : _minVersion(3), _majVersion(3), _window(nullptr) {}
 		GLContext(unsigned majVer, unsigned minVer, GLFWwindow *window);
 		void viewport(int x, int y, unsigned w, unsigned h);
 		void clearColor(const Color& color);

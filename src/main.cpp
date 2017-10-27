@@ -4,6 +4,8 @@
 #include "framework/util/Logger.h"
 #include "framework/graphics/Color.h"
 #include "framework/input/InputHandler.h"
+#include "framework/graphics/Shader.h"
+#include "framework/io/ResourceManager.h"
 using namespace Framework;
 
 Framework::Application *app;
@@ -27,30 +29,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 
 void render_sample(Application *app, float x, float y)
 {
-	float ratio;
-	int width, height;
-	glfwGetFramebufferSize(app->get_window(), &width, &height);
-	ratio = width / (float)height;
-	app->get_context().viewport(0, 0, width, height);
-	app->get_context().clear(GL_COLOR_BUFFER_BIT);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef(x, y, 0);
-	//glRotatef((float)glfwGetTime() * 50.f, 0.f, 0.f, 1.f);
-	glBegin(GL_TRIANGLES);
-	glColor3f(1.f, 0.f, 0.f);
-	glVertex3f(-0.6f, -0.4f, 0.f);
-	glColor3f(0.f, 1.f, 0.f);
-	glVertex3f(0.6f, -0.4f, 0.f);
-	glColor3f(0.f, 0.f, 1.f);
-	glVertex3f(0.f, 0.6f, 0.f);
-	glEnd();
-
-	glfwSwapBuffers(app->get_window());
-	glfwPollEvents();
+	
 }
 
 void update()
@@ -87,6 +66,31 @@ int main()
 	InputHandler::addInput("Left", GLFW_KEY_LEFT);
 	InputHandler::addInput("Right", GLFW_KEY_RIGHT);
 
+	Shader *shader = ResourceManager::Load<Shader>("assets/shaders/basic.glsl");
+	shader->use();
+
+	float vertices[] =
+	{
+		-0.5f, -0.5f, 0.0f,
+		 0.5f, -0.5f, 0.0f,
+		 0.0f,  0.5f, 0.0f
+	};
+	//int indices[] = {0, 1, 2};
+
+	unsigned int vao_id;
+	glGenVertexArrays(1, &vao_id);
+
+	unsigned int vbo_id;
+	glGenBuffers(1, &vbo_id);
+
+	glBindVertexArray(vao_id);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
 	app->get_context().clearColor(Framework::Color::RED);
 	while (!glfwWindowShouldClose(app->get_window()))
 	{
@@ -105,7 +109,23 @@ int main()
 			t += dt;
 		}
 
-		render_sample(app, xPos, yPos);
+		float ratio;
+		int width, height;
+		glfwGetFramebufferSize(app->get_window(), &width, &height);
+		ratio = width / (float)height;
+		app->get_context().viewport(0, 0, width, height);
+		app->get_context().clear(GL_COLOR_BUFFER_BIT);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		
+		glBindVertexArray(vao_id);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+	
+		glfwSwapBuffers(app->get_window());
+		glfwPollEvents();
 
 		std::cout << "FPS: " << (1.0 / frameTime) << " dt:" << frameTime << std::endl;
 	}
