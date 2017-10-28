@@ -1,27 +1,36 @@
+#ifndef SHADER_H
+#define SHADER_H
 #pragma once
 
 #include <string>
-#include <glad/glad.h>
+#include "framework/graphics/GLContext.h"
 
-class Shader
+namespace Framework
 {
-public:
-	Shader(void);
-	~Shader(void);
-	
-	//returns what we need for rendering
-	GLuint handle(void) const { return m_programObject; } 
+	class Shader
+	{
+	private:
+		static const unsigned INFOLOG_BUFF_LEN = 512;
 
-	//loads the shader program
-	bool load(const std::string name, const char* filename);
-	void use() const;
+		unsigned _vertHandle;
+		unsigned _fragHandle;
+		unsigned _progHandle;
+		std::string _name;
 
-private:
-	std::string m_name;
-	GLuint m_vertexShader;       //identifier for the vertex shader
-	GLuint m_fragmentShader;     //identifier for the fragment shader
-	GLuint m_programObject;      //identifier for the program- this is used when rendering.
-	GLuint loadShader(const char* filename, const GLenum type) const;
-	std::string shaderInfoLog(const GLuint shader) const;
-	std::string programInfoLog(const GLuint program) const;
-};
+		void compileAndLink(const std::string& path);
+		static GLuint loadSource(const std::string& path, GLenum type);
+		bool checkCompileErr(GLuint shader) const;
+		bool checkLinkErr(GLuint program) const;
+
+	public:
+		Shader(const std::string& name, const std::string& path);
+		Shader(const Shader& other) = delete;
+		Shader& operator=(const Shader& other) = delete;
+		~Shader();
+
+		unsigned handle() const { return this->_progHandle; }
+		void use() const;
+	};
+}
+
+#endif // SHADER_H

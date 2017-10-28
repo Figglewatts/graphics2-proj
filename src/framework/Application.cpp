@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "framework/util/Logger.h"
 #include <stdexcept>
+#include <GLFW/glfw3.h>
 
 namespace Framework
 {
@@ -8,6 +9,7 @@ namespace Framework
 		unsigned minVer, unsigned width, unsigned height)
 	{
 		glfwInit();
+		this->_glContext = GLContext(majVer, minVer, _window);
 		this->_window = glfwCreateWindow(width, height,
 			windowTitle.c_str(), NULL, NULL);
 		if (!_window)
@@ -16,10 +18,14 @@ namespace Framework
 			glfwTerminate();
 			throw std::runtime_error("Could not create GLFW window");
 		}
-		
 		glfwMakeContextCurrent(_window);
-		this->_glContext = GLContext(majVer, minVer, _window);
-		this->_glContext.viewport(0, 0, width, height);
+
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+		{
+			LOG(LogLevel::FATAL, "Failed to initialize GLAD!");
+			glfwTerminate();
+			throw std::runtime_error("GLAD could not be initialized");
+		}
 	}
 
 	Application::~Application()

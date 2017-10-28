@@ -4,9 +4,12 @@
 
 #include "framework/graphics/GLContext.h"
 #include <string>
+#include <iostream>
 
 namespace Framework
 {
+	
+	
 	class Application
 	{
 	private:

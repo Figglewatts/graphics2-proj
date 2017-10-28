@@ -2,10 +2,10 @@
 
 #include "framework/Application.h"
 #include "framework/util/Logger.h"
-#include "framework/graphics/Color.h"
 #include "framework/input/InputHandler.h"
 #include "framework/graphics/Shader.h"
 #include "framework/io/ResourceManager.h"
+#include "framework/graphics/Mesh.h"
 using namespace Framework;
 
 Framework::Application *app;
@@ -66,32 +66,21 @@ int main()
 	InputHandler::addInput("Left", GLFW_KEY_LEFT);
 	InputHandler::addInput("Right", GLFW_KEY_RIGHT);
 
-	Shader *shader = ResourceManager::Load<Shader>("assets/shaders/basic.glsl");
-	shader->use();
+	Shader *shader = ResourceManager::Load<Shader>("assets/shaders/basic");
 
-	float vertices[] =
-	{
-		-0.5f, -0.5f, 0.0f,
-		 0.5f, -0.5f, 0.0f,
-		 0.0f,  0.5f, 0.0f
+	std::vector<glm::vec3> vertices = {
+		glm::vec3({0.5f,  0.5f, 0.0f}),  // top right
+		glm::vec3({0.5f, -0.5f, 0.0f}),  // bottom right
+		glm::vec3({-0.5f, -0.5f, 0.0f}),  // bottom left
+		glm::vec3({-0.5f,  0.5f, 0.0f})   // top left 
 	};
-	//int indices[] = {0, 1, 2};
+	std::vector<unsigned> indices = {  // note that we start from 0!
+		0, 1, 3,   // first triangle
+		1, 2, 3    // second triangle
+	};
 
-	unsigned int vao_id;
-	glGenVertexArrays(1, &vao_id);
+	Mesh m = Mesh(vertices, indices);
 
-	unsigned int vbo_id;
-	glGenBuffers(1, &vbo_id);
-
-	glBindVertexArray(vao_id);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	app->get_context().clearColor(Framework::Color::RED);
 	while (!glfwWindowShouldClose(app->get_window()))
 	{
 		double newTime = glfwGetTime();
@@ -109,25 +98,18 @@ int main()
 			t += dt;
 		}
 
-		float ratio;
-		int width, height;
-		glfwGetFramebufferSize(app->get_window(), &width, &height);
-		ratio = width / (float)height;
-		app->get_context().viewport(0, 0, width, height);
-		app->get_context().clear(GL_COLOR_BUFFER_BIT);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		// draw our first triangle
+		glUseProgram(shader->handle());
+
+		m.draw();
 		
-		glBindVertexArray(vao_id);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-	
 		glfwSwapBuffers(app->get_window());
 		glfwPollEvents();
 
-		std::cout << "FPS: " << (1.0 / frameTime) << " dt:" << frameTime << std::endl;
+		//std::cout << "FPS: " << (1.0 / frameTime) << " dt:" << frameTime << std::endl;
 	}
 	
 	delete app;

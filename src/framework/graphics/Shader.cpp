@@ -1,170 +1,97 @@
 #include "Shader.h"
-#include <iostream>
+
 #include <fstream>
 #include <sstream>
-#include <vector>
 
 #include "framework/util/Logger.h"
 
-Shader::Shader(void)
+namespace Framework
 {
-	m_name = "";
-	m_vertexShader = 0;
-	m_fragmentShader = 0;
-	m_programObject = 0;
-}
-
-Shader::~Shader(void)
-{
-	glUseProgram(0);
-	glDeleteShader(m_vertexShader);
-	glDeleteShader(m_fragmentShader);
-	glDeleteProgram(m_programObject);
-}
-
-
-bool Shader::load(const std::string name, const char* filename)
-{
-	m_name = name;
-	GLint success = 0;
-	
-	//here we create a vertex shader and set the shader source
-	m_vertexShader = loadShader(filename, GL_VERTEX_SHADER);
-	
-	//next compile the vertex shader
-	glCompileShader(m_vertexShader);
-	
-	//check if it compiled ok.
-	glGetShaderiv(m_vertexShader, GL_COMPILE_STATUS, &success);
-
-	if(!success)
+	Shader::Shader(const std::string& name, const std::string& path)
+		: _name(name)
 	{
-		LOG(LogLevel::ERR,"Error compiling vertex shader: %s", filename);
-		LOG(LogLevel::ERR, "Shader info log: \n%s", shaderInfoLog(m_vertexShader).c_str());
-		
-		return false;
+		compileAndLink(path);
 	}
 
-	else
+	Shader::~Shader()
 	{
-		//create a fragment shader and set the shader source
-		m_fragmentShader = loadShader(filename, GL_FRAGMENT_SHADER);
-
-		//compile the fragment shader
-		glCompileShader(m_fragmentShader);
-
-		//check for any compiling errors
-		glGetShaderiv(m_fragmentShader, GL_COMPILE_STATUS, &success);
-
-		if(!success)
-		{
-			LOG(LogLevel::ERR,"Error compiling fragment shader: %s", filename);
-			LOG(LogLevel::ERR, "Shader info log: \n%s", shaderInfoLog(m_fragmentShader).c_str());
-			
-			return false;
-		}
-        
-		else
-		{
-			//create the program
-			m_programObject = glCreateProgram();
-
-			//attach the vertex and fragment shaders
-			glAttachShader(m_programObject, m_vertexShader);
-			glAttachShader(m_programObject, m_fragmentShader);
-
-			//link it all together
-			glLinkProgram(m_programObject);
-
-			//check for any errors with the shader program
-			glGetProgramiv(m_programObject, GL_LINK_STATUS, &success);
-        
-			if(!success)
-			{
-				LOG(LogLevel::ERR, "Error linking shader %s", filename);
-				LOG(LogLevel::ERR, "Program info log: \n%s", programInfoLog(m_programObject).c_str());
-				
-				return false;
-			}
-		}
-    }
-
-	LOG(LogLevel::INFO, "Loaded GLSL program: %s", m_name.c_str());
-
-	return true;
-}
-
-void Shader::use() const
-{
-	glUseProgram(this->m_programObject);
-}
-
-//reads the shader from a file and defines the shader source
-GLuint Shader::loadShader(const char* filename, GLenum type) const
-{
-	std::ifstream file(filename, std::ios::binary);
-	
-	if(!file.is_open())
-		return -1;
-
-	std::stringstream buffer;
-	buffer << "#version 320 es\n";
-	switch (type)
-	{
-		case GL_VERTEX_SHADER:
-		{
-			buffer << "#define vert_main main\n";
-		} break;
-		case GL_FRAGMENT_SHADER:
-		{
-			buffer << "#define frag_main main\n";
-		} break;
+		glDeleteProgram(this->_progHandle);
 	}
-	std::string shaderSrc(
-		(std::istreambuf_iterator<char>(file)),
-		(std::istreambuf_iterator<char>()));
 
-	buffer << shaderSrc;
+	void Shader::compileAndLink(const std::string& path)
+	{
+		// load and compile vertex shader
+		this->_vertHandle = this->loadSource(path, GL_VERTEX_SHADER);
+		glCompileShader(this->_vertHandle);
+		checkCompileErr(this->_vertHandle);
 
-	std::string buffStr = buffer.str();
+		// load and compile fragment shader
+		this->_fragHandle = this->loadSource(path, GL_FRAGMENT_SHADER);
+		glCompileShader(this->_fragHandle);
+		checkCompileErr(this->_fragHandle);
 
-	//LOG(LogLevel::INFO, buffer.str().c_str());
+		// link the shader program
+		this->_progHandle = glCreateProgram();
+		glAttachShader(this->_progHandle, this->_vertHandle);
+		glAttachShader(this->_progHandle, this->_fragHandle);
+		glLinkProgram(this->_progHandle);
+		checkLinkErr(this->_progHandle);
 
-	const char *src_str = buffStr.c_str();
+		// clean up unused handles
+		glDeleteShader(this->_vertHandle);
+		glDeleteShader(this->_fragHandle);
+		this->_vertHandle = this->_fragHandle = 0;
+	}
 
-	GLuint shader = glCreateShader(type);
+	GLuint Shader::loadSource(const std::string& path, GLenum type)
+	{
+		std::ifstream source(path + (type == GL_VERTEX_SHADER ? ".vert" : ".frag"));
 
-	LOG(LogLevel::INFO, src_str);
+		if (!source.is_open())
+		{
+			LOG(LogLevel::FATAL, "Shader %s could not be loaded", path.c_str());
+			throw std::runtime_error("Could not load shader file");
+		}
+		const std::string shaderSrc(
+			(std::istreambuf_iterator<char>(source)),
+			(std::istreambuf_iterator<char>()));
+		const char *src_str = shaderSrc.c_str();
+		GLuint shader = glCreateShader(type);
+		glShaderSource(shader, 1, &src_str, 0);
 
-	glShaderSource(shader, 1, &src_str, 0);
+		return shader;
+	}
 
-	return shader;
-}
+	bool Shader::checkCompileErr(GLuint shader) const
+	{
+		int success;
+		char infoLog[INFOLOG_BUFF_LEN];
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+		if (!success)
+		{
+			glGetShaderInfoLog(shader, INFOLOG_BUFF_LEN, nullptr, infoLog);
+			LOG(LogLevel::ERR, "Error compiling shader %s", this->_name.c_str());
+			LOG(LogLevel::ERR, "Info log:\n%s", infoLog);
+		}
+		return success;
+	}
 
-//Errors and other info for the shaders and the program are obtained
-//with the following functions.
-std::string Shader::shaderInfoLog(const GLuint shader) const
-{
-	GLint length;
-	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
-	std::vector<char> log(length);
- 
-	glGetShaderInfoLog(shader, length, &length, log.data());
+	bool Shader::checkLinkErr(GLuint program) const
+	{
+		int success;
+		char infoLog[INFOLOG_BUFF_LEN];
+		glGetProgramiv(program, GL_LINK_STATUS, &success);
+		if (!success)
+		{
+			glGetProgramInfoLog(program, INFOLOG_BUFF_LEN, nullptr, infoLog);
+			LOG(LogLevel::ERR, "Error linking program %s", this->_name.c_str());
+			LOG(LogLevel::ERR, "Info log:\n%s", infoLog);
+		}
+		return success;
+	}
 
-	std::string retLog(begin(log), end(log));
-	
-	return retLog;
-}
-
-
-std::string Shader::programInfoLog(const GLuint program) const
-{
-	GLsizei infoLogSize = 0;
-	std::string infoLog;
-
-	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogSize);
-	infoLog.resize(infoLogSize);
-	glGetProgramInfoLog(program, infoLogSize, &infoLogSize, &infoLog[0]);
-
-	return infoLog;
+	void Shader::use() const
+	{
+		glUseProgram(this->_progHandle);
+	}
 }

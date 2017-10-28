@@ -4,6 +4,9 @@
 
 #include <map>
 #include <string>
+#include "framework/graphics/Shader.h"
+#include "framework/util/Logger.h"
+#include "framework/util/Convenience.h"
 
 namespace Framework
 {
@@ -77,12 +80,12 @@ namespace Framework
 	template<>
 	Shader* ResourceManager::Load(const char* path, ResourceLifespan span)
 	{
-		LOG(LogLevel::INFO, "Loading shader!");
+		const std::string shaderName = removeExtension(basename(path));
 		
-		Shader shader;
-		shader.load("basic", path);
-		Resource<Shader>* res = new Resource<Shader>(shader, span);
+		Resource<Shader*>* res = new Resource<Shader*>(new Shader(shaderName, path), span);
 		ResourceManager::_resources[std::string(path)] = res;
+
+		return res->data;
 	}
 }
 
