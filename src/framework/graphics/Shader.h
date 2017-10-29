@@ -9,6 +9,7 @@ namespace Framework
 {
 	class Shader
 	{
+		// TODO: add uniforms as class (override operator=)
 	private:
 		static const unsigned INFOLOG_BUFF_LEN = 512;
 
