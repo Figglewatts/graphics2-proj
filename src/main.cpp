@@ -3,7 +3,6 @@
 #include "framework/Application.h"
 #include "framework/util/Logger.h"
 #include "framework/input/InputHandler.h"
-#include "framework/graphics/ShaderUniform.h"
 #include "framework/graphics/Shader.h"
 
 #include "framework/io/ResourceManager.h"
@@ -69,7 +68,6 @@ int main()
 	InputHandler::addInput("Right", GLFW_KEY_RIGHT);
 
 	Shader *shader = ResourceManager::Load<Shader>("assets/shaders/basic");
-	ShaderUniform<float, 1> uniform = ShaderUniform<float, 1>("testUniform", shader->handle());
 
 	std::vector<glm::vec3> vertices = {
 		glm::vec3({0.5f,  0.5f, 0.0f}),  // top right
