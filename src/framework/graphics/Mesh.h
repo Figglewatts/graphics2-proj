@@ -5,6 +5,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+#include "framework/graphics/Shader.h"
+
 namespace Framework
 {
 	class Mesh
@@ -15,12 +17,13 @@ namespace Framework
 		unsigned _vao;
 		unsigned _vbo;
 		unsigned _ebo;
+		Shader *_pShader;
 
 	public:
 		Mesh(std::vector<glm::vec3> verts, std::vector<unsigned> indices);
 		~Mesh();
 
-		void draw() const;
+		void draw(glm::mat4 proj, glm::mat4 view) const;
 	};
 }
 

@@ -30,7 +30,7 @@ namespace Framework
 		glDeleteVertexArrays(1, &_vao);
 	}
 
-	void Mesh::draw() const
+	void Mesh::draw(glm::mat4 proj, glm::mat4 view) const
 	{
 		glBindVertexArray(_vao);
 		glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, nullptr);

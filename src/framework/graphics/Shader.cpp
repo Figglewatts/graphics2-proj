@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "framework/util/Logger.h"
 
@@ -90,8 +91,47 @@ namespace Framework
 		return success;
 	}
 
+	unsigned Shader::getLocation(const std::string & name) const
+	{
+		return glGetUniformLocation(this->_progHandle, name.c_str());
+	}
+
 	void Shader::use() const
 	{
 		glUseProgram(this->_progHandle);
 	}
+
+	void Shader::setUniform(const std::string & name, bool value) const
+	{
+		glUniform1i(getLocation(name), (int)value);
+	}
+
+	void Shader::setUniform(const std::string & name, int value) const
+	{
+		glUniform1i(getLocation(name), value);
+	}
+
+	void Shader::setUniform(const std::string & name, float value) const
+	{
+		glUniform1f(getLocation(name), value);
+	}
+
+	void Shader::setUniform(const std::string & name, glm::mat4 value, bool transpose) const
+	{
+		glUniformMatrix4fv(getLocation(name), 1, transpose, glm::value_ptr(value));
+	}
+
+	void Shader::setUniform(const std::string & name, glm::vec2 value) const
+	{
+	}
+
+	void Shader::setUniform(const std::string & name, glm::vec3 value) const
+	{
+	}
+
+	void Shader::setUniform(const std::string & name, glm::vec4 value) const
+	{
+	}
+
+
 }
