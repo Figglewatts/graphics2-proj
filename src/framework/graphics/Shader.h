@@ -38,9 +38,11 @@ namespace Framework
 		void setUniform(const std::string& name, int value) const;
 		void setUniform(const std::string& name, float value) const;
 		void setUniform(const std::string& name, glm::mat4 value, bool transpose) const;
+		void setUniform(const std::string& name, glm::mat3 value, bool transpose) const;
 		void setUniform(const std::string& name, glm::vec2 value) const;
 		void setUniform(const std::string& name, glm::vec3 value) const;
 		void setUniform(const std::string& name, glm::vec4 value) const;
+
 	};
 }
 

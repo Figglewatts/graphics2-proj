@@ -121,17 +121,26 @@ namespace Framework
 		glUniformMatrix4fv(getLocation(name), 1, transpose, glm::value_ptr(value));
 	}
 
+	void Shader::setUniform(const std::string& name, glm::mat3 value, bool transpose) const
+	{
+		glUniformMatrix3fv(getLocation(name), 1, transpose, glm::value_ptr(value));
+	}
+
 	void Shader::setUniform(const std::string & name, glm::vec2 value) const
 	{
+		glUniform2fv(getLocation(name), 1, glm::value_ptr(value));
 	}
 
 	void Shader::setUniform(const std::string & name, glm::vec3 value) const
 	{
+		glUniform3fv(getLocation(name), 1, glm::value_ptr(value));
 	}
 
 	void Shader::setUniform(const std::string & name, glm::vec4 value) const
 	{
+		glUniform4fv(getLocation(name), 1, glm::value_ptr(value));
 	}
+
 
 
 }
