@@ -77,6 +77,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(ProjectDir)/src;$(ProjectDir)/include;D:\Programs\GLFW\include;$(ProjectDir)/deps;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -98,6 +99,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>$(ProjectDir)/src;$(ProjectDir)/include;D:\Programs\GLFW\include;$(ProjectDir)/deps;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -117,6 +119,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(ProjectDir)/src;$(ProjectDir)/include;$(ProjectDir)/deps;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(ProjectDir)/deps/glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -132,6 +135,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(ProjectDir)/src;$(ProjectDir)/include;D:\Programs\GLFW\include;$(ProjectDir)/deps;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <AdditionalDependencies>deps/glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -169,6 +173,7 @@
     <ClInclude Include="src\framework\graphics\Shader.h" />
     <ClInclude Include="src\framework\input\InputHandler.h" />
     <ClInclude Include="src\framework\io\resourcemanager.h" />
+    <ClInclude Include="src\framework\math\Vertex.h" />
     <ClInclude Include="src\framework\util\Convenience.h" />
     <ClInclude Include="src\framework\util\Logger.h" />
   </ItemGroup>

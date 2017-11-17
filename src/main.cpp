@@ -69,18 +69,18 @@ int main()
 
 	Shader *shader = ResourceManager::Load<Shader>("assets/shaders/basic");
 
-	std::vector<glm::vec3> vertices = {
-		glm::vec3({0.5f,  0.5f, 0.0f}),  // top right
-		glm::vec3({0.5f, -0.5f, 0.0f}),  // bottom right
-		glm::vec3({-0.5f, -0.5f, 0.0f}),  // bottom left
-		glm::vec3({-0.5f,  0.5f, 0.0f})   // top left 
+	std::vector<Vertex> vertices = {
+		Vertex(glm::vec3({0.5f,  0.5f, 0.0f}), glm::vec3(0), glm::vec2(0), glm::vec4({1.f, 0.f, 0.f, 1.f})),  // top right
+		Vertex(glm::vec3({ 0.5f,  0.5f, 0.0f }), glm::vec3(0), glm::vec2(0), glm::vec4({ 0.f, 1.f, 0.f, 1.f})),  // bottom right
+		Vertex(glm::vec3({ 0.5f,  0.5f, 0.0f }), glm::vec3(0), glm::vec2(0), glm::vec4({ 0.f, 0.f, 1.f, 1.f})),  // bottom left
+		Vertex(glm::vec3({ 0.5f,  0.5f, 0.0f }), glm::vec3(0), glm::vec2(0), glm::vec4({ 1.0f, 0.f, 0.5f, 1.f}))   // top left 
 	};
 	std::vector<unsigned> indices = {  // note that we start from 0!
 		0, 1, 3,   // first triangle
 		1, 2, 3    // second triangle
 	};
 
-	Mesh m = Mesh(vertices, indices);
+	Mesh m = Mesh(vertices, indices, shader);
 
 	while (!glfwWindowShouldClose(app->get_window()))
 	{
