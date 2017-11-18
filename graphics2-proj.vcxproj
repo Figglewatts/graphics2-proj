@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{EA1672E6-D43C-4E69-A7E3-96EDA212652D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClCompile Include="deps\glad.c" />
     <ClCompile Include="src\framework\Application.cpp" />
+    <ClCompile Include="src\framework\graphics\Camera.cpp" />
     <ClCompile Include="src\framework\graphics\Color.cpp" />
     <ClCompile Include="src\framework\graphics\GLContext.cpp" />
     <ClCompile Include="src\framework\graphics\Mesh.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="src\framework\Application.h" />
     <ClInclude Include="src\framework\ecs\Component.h" />
     <ClInclude Include="src\framework\ecs\Entity.h" />
+    <ClInclude Include="src\framework\graphics\Camera.h" />
     <ClInclude Include="src\framework\graphics\Color.h" />
     <ClInclude Include="src\framework\graphics\GLContext.h" />
     <ClInclude Include="src\framework\graphics\Mesh.h" />

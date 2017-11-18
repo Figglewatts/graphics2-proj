@@ -1,4 +1,5 @@
 #include <iostream>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "framework/Application.h"
 #include "framework/util/Logger.h"
@@ -7,6 +8,7 @@
 
 #include "framework/io/ResourceManager.h"
 #include "framework/graphics/Mesh.h"
+#include "framework/graphics/Camera.h"
 using namespace Framework;
 
 Framework::Application *app;
@@ -17,6 +19,8 @@ double t = 0.0;
 const double dt = 1.0 / 60.0;
 double currentTime = glfwGetTime();
 double accumulator = 0.0;
+
+Camera cam = Camera({ -5.f, 0, 0 }, { 0, 1, 0 }, 0, 0);
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
@@ -35,23 +39,26 @@ void render_sample(Application *app, float x, float y)
 
 void update()
 {
+	glm::vec3 camPos = cam.get_position();
+	float speed = 0.3f;
 	if (InputHandler::checkButton("Up", ButtonState::HELD))
 	{
-		yPos += 0.01F;
+		camPos += cam.front() * speed;
 	}
 	else if (InputHandler::checkButton("Down", ButtonState::HELD))
 	{
-		yPos -= 0.01F;
+		camPos -= cam.front() * speed;
 	}
 
 	if (InputHandler::checkButton("Left", ButtonState::HELD))
 	{
-		xPos -= 0.01F;
+		camPos -= cam.right() * speed;
 	}
 	else if (InputHandler::checkButton("Right", ButtonState::HELD))
 	{
-		xPos += 0.01F;
+		camPos += cam.right() * speed;
 	}
+	cam.set_position(camPos);
 }
 
 int main()
@@ -70,10 +77,10 @@ int main()
 	Shader *shader = ResourceManager::Load<Shader>("assets/shaders/basic");
 
 	std::vector<Vertex> vertices = {
-		Vertex(glm::vec3({0.5f,  0.5f, 0.0f}), glm::vec3(0), glm::vec2(0), glm::vec4({1.f, 0.f, 0.f, 1.f})),  // top right
-		Vertex(glm::vec3({ 0.5f,  0.5f, 0.0f }), glm::vec3(0), glm::vec2(0), glm::vec4({ 0.f, 1.f, 0.f, 1.f})),  // bottom right
-		Vertex(glm::vec3({ 0.5f,  0.5f, 0.0f }), glm::vec3(0), glm::vec2(0), glm::vec4({ 0.f, 0.f, 1.f, 1.f})),  // bottom left
-		Vertex(glm::vec3({ 0.5f,  0.5f, 0.0f }), glm::vec3(0), glm::vec2(0), glm::vec4({ 1.0f, 0.f, 0.5f, 1.f}))   // top left 
+		Vertex(glm::vec3({0.5f, 0.5f, 0.0f}), glm::vec3(0), glm::vec2(0), glm::vec4({1.f, 0.f, 0.f, 1.f})),  // top right
+		Vertex(glm::vec3({0.5f, -0.5f, 0.0f }), glm::vec3(0), glm::vec2(0), glm::vec4({ 0.f, 1.f, 0.f, 1.f})),  // bottom right
+		Vertex(glm::vec3({-0.5f, -0.5f, 0.0f }), glm::vec3(0), glm::vec2(0), glm::vec4({ 0.f, 0.f, 1.f, 1.f})),  // bottom left
+		Vertex(glm::vec3({-0.5f, 0.5f, 0.0f }), glm::vec3(0), glm::vec2(0), glm::vec4({ 1.0f, 0.f, 0.5f, 1.f}))   // top left 
 	};
 	std::vector<unsigned> indices = {  // note that we start from 0!
 		0, 1, 3,   // first triangle
@@ -102,8 +109,18 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// draw our first triangle
 		glUseProgram(shader->handle());
+
+		glm::mat4 model;
+		//model = glm::translate(model, glm::vec3(0.5f, 0, 0));
+		model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0, 1, 0));
+
+		glm::mat4 view = cam.view();
+		glm::mat4 projection = glm::perspective(glm::radians(45.f), 800.f / 600.f, 0.1f, 1000.f);
+		
+		shader->setUniform("model", model, false);
+		shader->setUniform("view", view, false);
+		shader->setUniform("projection", projection, false);
 
 		m.draw();
 		
