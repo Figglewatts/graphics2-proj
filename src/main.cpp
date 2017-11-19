@@ -40,7 +40,7 @@ void render_sample(Application *app, float x, float y)
 void update()
 {
 	glm::vec3 camPos = cam.get_position();
-	float speed = 0.3f;
+	float speed = 1.f;
 	if (InputHandler::checkButton("Up", ButtonState::HELD))
 	{
 		camPos += cam.front() * speed;
@@ -87,7 +87,15 @@ int main()
 		1, 2, 3    // second triangle
 	};
 
-	Mesh m = Mesh(vertices, indices, shader);
+	Mesh *m = ResourceManager::Load<Mesh>("assets/models/test.obj");
+	Texture2D *tex = ResourceManager::Load<Texture2D>("assets/textures/uvl.png");
+	m->set_shader(shader);
+	m->set_texture(tex);
+
+	Mesh *m1 = ResourceManager::Load<Mesh>("assets/models/test.obj");
+	Mesh *m2 = ResourceManager::Load<Mesh>("assets/models/test.obj");
+
+	glEnable(GL_DEPTH_TEST);
 
 	while (!glfwWindowShouldClose(app->get_window()))
 	{
@@ -107,27 +115,22 @@ int main()
 		}
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glUseProgram(shader->handle());
+		m->model() = glm::rotate(glm::mat4(1), (float)glfwGetTime(), glm::vec3(0, 1, 0));
 
-		glm::mat4 model;
-		//model = glm::translate(model, glm::vec3(0.5f, 0, 0));
-		model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0, 1, 0));
+		m1->model() = glm::translate(glm::mat4(1), { 1, 0, 0 });
 
-		glm::mat4 view = cam.view();
 		glm::mat4 projection = glm::perspective(glm::radians(45.f), 800.f / 600.f, 0.1f, 1000.f);
-		
-		shader->setUniform("model", model, false);
-		shader->setUniform("view", view, false);
-		shader->setUniform("projection", projection, false);
+		glm::mat4 view = cam.view();
 
-		m.draw();
+		m->draw(view, projection);
+		m1->draw(view, projection);
 		
 		glfwSwapBuffers(app->get_window());
 		glfwPollEvents();
 
-		//std::cout << "FPS: " << (1.0 / frameTime) << " dt:" << frameTime << std::endl;
+		std::cout << "FPS: " << (1.0 / frameTime) << " dt:" << frameTime << std::endl;
 	}
 	
 	delete app;

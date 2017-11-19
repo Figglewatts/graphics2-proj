@@ -7,7 +7,7 @@
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and/or associated documentation files (the
 ** "Materials"), to deal in the Materials without restriction, including
-** without limitation the rights to use, copy, modify, merge, publish,
+** without limitation the rights to bind, copy, modify, merge, publish,
 ** distribute, sublicense, and/or sell copies of the Materials, and to
 ** permit persons to whom the Materials are furnished to do so, subject to
 ** the following conditions:
@@ -41,12 +41,12 @@
  *
  *
  * See the Implementer's Guidelines for information about where this file
- * should be located on your system and for more details of its use:
+ * should be located on your system and for more details of its bind:
  *    http://www.khronos.org/registry/implementers_guide.pdf
  *
  * This file should be included as
  *        #include <KHR/khrplatform.h>
- * by Khronos client API header files that use its types and defines.
+ * by Khronos client API header files that bind its types and defines.
  *
  * The types in khrplatform.h should only be used to define API-specific types.
  *
@@ -70,8 +70,8 @@
  *    khronos_stime_nanoseconds_t signed time interval in nanoseconds
  *    khronos_boolean_enum_t      enumerated boolean type. This should
  *      only be used as a base type when a client API's boolean type is
- *      an enum. Client APIs which use an integer or other type for
- *      booleans cannot use this as the base type for their boolean.
+ *      an enum. Client APIs which bind an integer or other type for
+ *      booleans cannot bind this as the base type for their boolean.
  *
  * Tokens defined in khrplatform.h:
  *
@@ -227,7 +227,7 @@ typedef unsigned short int     khronos_uint16_t;
 /*
  * Types that differ between LLP64 and LP64 architectures - in LLP64,
  * pointers are 64 bits, but 'long' is still 32 bits. Win64 appears
- * to be the only LLP64 architecture in current use.
+ * to be the only LLP64 architecture in current bind.
  */
 #ifdef _WIN64
 typedef signed   long long int khronos_intptr_t;

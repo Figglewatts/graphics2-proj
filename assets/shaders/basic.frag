@@ -5,7 +5,9 @@ in vec4 vert_Normal;
 in vec2 vert_UV;
 out vec4 diffuseColor;
 
+uniform sampler2D diffuse_Tex;
+
 void main()
 {
-	diffuseColor = vert_Color;
+	diffuseColor = texture(diffuse_Tex, vert_UV);
 }

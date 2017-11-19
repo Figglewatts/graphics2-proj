@@ -96,9 +96,14 @@ namespace Framework
 		return glGetUniformLocation(this->_progHandle, name.c_str());
 	}
 
-	void Shader::use() const
+	void Shader::bind() const
 	{
 		glUseProgram(this->_progHandle);
+	}
+
+	void Shader::unbind() const
+	{
+		glUseProgram(0);
 	}
 
 	void Shader::setUniform(const std::string & name, bool value) const

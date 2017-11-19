@@ -48,6 +48,15 @@
     <ClCompile Include="src\framework\graphics\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\framework\io\OBJLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\framework\graphics\Texture2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ext\lodepng.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\date.h">
@@ -96,6 +105,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\framework\graphics\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\framework\io\OBJLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\framework\graphics\Texture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

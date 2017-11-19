@@ -150,13 +150,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="deps\glad.c" />
+    <ClCompile Include="src\ext\lodepng.cpp" />
     <ClCompile Include="src\framework\Application.cpp" />
     <ClCompile Include="src\framework\graphics\Camera.cpp" />
     <ClCompile Include="src\framework\graphics\Color.cpp" />
     <ClCompile Include="src\framework\graphics\GLContext.cpp" />
     <ClCompile Include="src\framework\graphics\Mesh.cpp" />
     <ClCompile Include="src\framework\graphics\Shader.cpp" />
+    <ClCompile Include="src\framework\graphics\Texture2D.cpp" />
     <ClCompile Include="src\framework\input\InputHandler.cpp" />
+    <ClCompile Include="src\framework\io\OBJLoad.cpp" />
     <ClCompile Include="src\framework\util\Convenience.cpp" />
     <ClCompile Include="src\framework\util\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -173,7 +176,9 @@
     <ClInclude Include="src\framework\graphics\GLContext.h" />
     <ClInclude Include="src\framework\graphics\Mesh.h" />
     <ClInclude Include="src\framework\graphics\Shader.h" />
+    <ClInclude Include="src\framework\graphics\Texture2D.h" />
     <ClInclude Include="src\framework\input\InputHandler.h" />
+    <ClInclude Include="src\framework\io\OBJLoad.h" />
     <ClInclude Include="src\framework\io\resourcemanager.h" />
     <ClInclude Include="src\framework\math\Vertex.h" />
     <ClInclude Include="src\framework\util\Convenience.h" />

@@ -32,7 +32,8 @@ namespace Framework
 		~Shader();
 
 		unsigned handle() const { return this->_progHandle; }
-		void use() const;
+		void bind() const;
+		void unbind() const;
 
 		void setUniform(const std::string& name, bool value) const;
 		void setUniform(const std::string& name, int value) const;

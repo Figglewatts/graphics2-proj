@@ -7,9 +7,14 @@
 #include "framework/graphics/Shader.h"
 #include "framework/util/Logger.h"
 #include "framework/util/Convenience.h"
+#include "framework/graphics/Mesh.h"
+#include "OBJLoad.h"
+#include "framework/graphics/Texture2D.h"
 
 namespace Framework
 {
+#define CHECK_CACHE(path, Type) do { Type *t; if(CheckCache(path, t)) return t->data; } while(0)
+	
 	enum class ResourceLifespan : unsigned
 	{
 		SCENE,
@@ -53,6 +58,7 @@ namespace Framework
 		ResourceManager& operator=(const ResourceManager& r) = delete;
 
 		static std::map<std::string, GenericResource*> _resources;
+		typedef std::map<std::string, GenericResource*>::iterator ResourcesInterator;
 	public:
 		static void ClearLifespan(ResourceLifespan span)
 		{
@@ -68,6 +74,20 @@ namespace Framework
 		}
 
 		template <typename Data>
+		static bool CheckCache(const char* path, Data& res)
+		{
+			ResourcesInterator it = _resources.find(path);
+			if (it != _resources.end())
+			{
+				// resource exists in cache
+				res = static_cast<Data>(it->second);
+				return true;
+			}
+			res = nullptr;
+			return false;
+		}
+
+		template <typename Data>
 		static Data* Load(const char* path, ResourceLifespan span = ResourceLifespan::GLOBAL)
 		{
 			LOG(LogLevel::WARN, "Unsure how to load: %s", path);
@@ -78,12 +98,38 @@ namespace Framework
 	std::map<std::string, GenericResource*> ResourceManager::_resources;
 
 	template<>
-	Shader* ResourceManager::Load(const char* path, ResourceLifespan span)
+	inline Shader* ResourceManager::Load(const char* path, ResourceLifespan span)
 	{
+		CHECK_CACHE(path, Resource<Shader*>);
+		
 		const std::string shaderName = removeExtension(basename(path));
 		
 		Resource<Shader*>* res = new Resource<Shader*>(new Shader(shaderName, path), span);
 		ResourceManager::_resources[std::string(path)] = res;
+
+		return res->data;
+	}
+
+	template<>
+	inline Mesh* ResourceManager::Load(const char* path, ResourceLifespan span)
+	{
+		CHECK_CACHE(path, Resource<Mesh*>);
+
+		Mesh *m = OBJLoad::Load(path);
+		Resource<Mesh*>* res = new Resource<Mesh*>(m, span);
+		_resources[std::string(path)] = res;
+
+		return res->data;
+	}
+
+	template<>
+	inline Texture2D* ResourceManager::Load(const char* path, ResourceLifespan span)
+	{
+		CHECK_CACHE(path, Resource<Texture2D*>);
+
+		Texture2D *tex = new Texture2D(path);
+		Resource<Texture2D*>* res = new Resource<Texture2D*>(tex, span);
+		_resources[std::string(path)] = res;
 
 		return res->data;
 	}

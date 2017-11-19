@@ -6,10 +6,11 @@
 
 namespace Framework
 {
-	Mesh::Mesh(std::vector<Vertex> verts, std::vector<unsigned> indices, Shader* shader)
+	Mesh::Mesh(std::vector<Vertex> verts, std::vector<unsigned> indices, Shader* shader, Texture2D* tex)
 		: _verts(verts)
 		, _indices(indices)
 		, _pShader(shader)
+		, _pTexture(tex)
 	{
 		glGenVertexArrays(1, &_vao);
 		glBindVertexArray(_vao);
@@ -22,10 +23,6 @@ namespace Framework
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof (_indices[0]) * _indices.size(), &_indices[0], GL_STATIC_DRAW);
-
-		int sa = sizeof(_verts[0]) * _verts.size();
-		int sv = _verts.size();
-		int s = sizeof(Vertex);
 
 		// position
 		glEnableVertexAttribArray(0);
@@ -42,11 +39,6 @@ namespace Framework
 		// color
 		glEnableVertexAttribArray(3);
 		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, Color)));
-		
-
-		//_pShader->setUniform("u_MVP", glm::mat4(1.f), false);
-
-		//GLenum err = glGetError();
 	}
 
 	Mesh::~Mesh()
@@ -56,15 +48,18 @@ namespace Framework
 		glDeleteVertexArrays(1, &_vao);
 	}
 
-	void Mesh::draw() const
+	void Mesh::draw(glm::mat4 view, glm::mat4 proj) const
 	{
-		GLenum err = glGetError();
-		_pShader->use();
+		_pShader->bind();
+		_pShader->setUniform("model", _model, false);
+		_pShader->setUniform("view", view, false);
+		_pShader->setUniform("projection", proj, false);
+		_pTexture->bind();
 		glBindVertexArray(_vao);
 		glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, nullptr);
 		glBindVertexArray(0);
-		glUseProgram(0);
-		err = glGetError();
+		_pShader->unbind();
+		_pTexture->unbind();
 	}
 
 }
