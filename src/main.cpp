@@ -9,6 +9,7 @@
 #include "framework/io/ResourceManager.h"
 #include "framework/graphics/Mesh.h"
 #include "framework/graphics/Camera.h"
+#include "framework/rendering/DeferredRenderer.h"
 using namespace Framework;
 
 Framework::Application *app;
@@ -21,6 +22,7 @@ double currentTime = glfwGetTime();
 double accumulator = 0.0;
 
 Camera cam = Camera({ -5.f, 0, 0 }, { 0, 1, 0 }, 0, 0);
+Mesh *m;
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
@@ -32,9 +34,9 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	InputHandler::updateKeys(key, action);
 }
 
-void render_sample(Application *app, float x, float y)
+void render(glm::mat4 view, glm::mat4 proj)
 {
-	
+	m->draw(view, proj);
 }
 
 void update()
@@ -74,7 +76,9 @@ int main()
 	InputHandler::addInput("Left", GLFW_KEY_LEFT);
 	InputHandler::addInput("Right", GLFW_KEY_RIGHT);
 
-	Shader *shader = ResourceManager::Load<Shader>("assets/shaders/basic");
+	DeferredRenderer renderer = DeferredRenderer(800, 600, &app->get_context());
+
+	Shader *shader = ResourceManager::Load<Shader>("assets/shaders/basicDeferred");
 
 	std::vector<Vertex> vertices = {
 		Vertex(glm::vec3({0.5f, 0.5f, 0.0f}), glm::vec3(0), glm::vec2(0), glm::vec4({1.f, 0.f, 0.f, 1.f})),  // top right
@@ -87,13 +91,10 @@ int main()
 		1, 2, 3    // second triangle
 	};
 
-	Mesh *m = ResourceManager::Load<Mesh>("assets/models/test.obj");
-	Texture2D *tex = ResourceManager::Load<Texture2D>("assets/textures/uvl.png");
+	m = ResourceManager::Load<Mesh>("assets/models/h4_carbine.obj");
+	Texture2D *tex = ResourceManager::Load<Texture2D>("assets/textures/storm_covenant_carbine_diffcoloured.png");
 	m->set_shader(shader);
 	m->set_texture(tex);
-
-	Mesh *m1 = ResourceManager::Load<Mesh>("assets/models/test.obj");
-	Mesh *m2 = ResourceManager::Load<Mesh>("assets/models/test.obj");
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -115,17 +116,15 @@ int main()
 		}
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		m->model() = glm::rotate(glm::mat4(1), (float)glfwGetTime(), glm::vec3(0, 1, 0));
-
-		m1->model() = glm::translate(glm::mat4(1), { 1, 0, 0 });
 
 		glm::mat4 projection = glm::perspective(glm::radians(45.f), 800.f / 600.f, 0.1f, 1000.f);
 		glm::mat4 view = cam.view();
 
-		m->draw(view, projection);
-		m1->draw(view, projection);
+		shader->bind();
+		renderer.render(render, view, projection);
 		
 		glfwSwapBuffers(app->get_window());
 		glfwPollEvents();
