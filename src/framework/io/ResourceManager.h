@@ -95,8 +95,6 @@ namespace Framework
 		}
 	};
 
-	std::map<std::string, GenericResource*> ResourceManager::_resources;
-
 	template<>
 	inline Shader* ResourceManager::Load(const char* path, ResourceLifespan span)
 	{

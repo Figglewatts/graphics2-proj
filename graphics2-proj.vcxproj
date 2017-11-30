@@ -155,14 +155,17 @@
     <ClCompile Include="src\framework\graphics\Camera.cpp" />
     <ClCompile Include="src\framework\graphics\Color.cpp" />
     <ClCompile Include="src\framework\graphics\Framebuffer.cpp" />
+    <ClCompile Include="src\framework\graphics\FramebufferBuilder.cpp" />
     <ClCompile Include="src\framework\graphics\GLContext.cpp" />
     <ClCompile Include="src\framework\graphics\Mesh.cpp" />
     <ClCompile Include="src\framework\graphics\Shader.cpp" />
     <ClCompile Include="src\framework\graphics\Texture2D.cpp" />
     <ClCompile Include="src\framework\input\InputHandler.cpp" />
     <ClCompile Include="src\framework\io\OBJLoad.cpp" />
+    <ClCompile Include="src\framework\io\ResourceManager.cpp" />
     <ClCompile Include="src\framework\rendering\DeferredRenderer.cpp" />
     <ClCompile Include="src\framework\rendering\GBuffer.cpp" />
+    <ClCompile Include="src\framework\rendering\Renderable.cpp" />
     <ClCompile Include="src\framework\util\Convenience.cpp" />
     <ClCompile Include="src\framework\util\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -176,7 +179,9 @@
     <ClInclude Include="src\framework\ecs\Entity.h" />
     <ClInclude Include="src\framework\graphics\Camera.h" />
     <ClInclude Include="src\framework\graphics\Color.h" />
+    <ClInclude Include="src\framework\graphics\FBOAttachment.h" />
     <ClInclude Include="src\framework\graphics\Framebuffer.h" />
+    <ClInclude Include="src\framework\graphics\FramebufferBuilder.h" />
     <ClInclude Include="src\framework\graphics\GLContext.h" />
     <ClInclude Include="src\framework\graphics\Mesh.h" />
     <ClInclude Include="src\framework\graphics\Shader.h" />
@@ -187,7 +192,11 @@
     <ClInclude Include="src\framework\math\Vertex.h" />
     <ClInclude Include="src\framework\rendering\DeferredRenderer.h" />
     <ClInclude Include="src\framework\rendering\GBuffer.h" />
+    <ClInclude Include="src\framework\rendering\Lights.h" />
+    <ClInclude Include="src\framework\rendering\Renderable.h" />
     <ClInclude Include="src\framework\rendering\Renderer.h" />
+    <ClInclude Include="src\framework\rendering\Scene.h" />
+    <ClInclude Include="src\framework\rendering\SceneNode.h" />
     <ClInclude Include="src\framework\util\Convenience.h" />
     <ClInclude Include="src\framework\util\Logger.h" />
   </ItemGroup>
@@ -196,6 +205,12 @@
     <None Include="assets\shaders\basic.vert" />
     <None Include="assets\shaders\basicDeferred.frag" />
     <None Include="assets\shaders\basicDeferred.vert" />
+    <None Include="assets\shaders\dirLightPass.frag" />
+    <None Include="assets\shaders\dirLightPass.vert" />
+    <None Include="assets\shaders\null.frag" />
+    <None Include="assets\shaders\null.vert" />
+    <None Include="assets\shaders\pointLightPass.frag" />
+    <None Include="assets\shaders\pointLightPass.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

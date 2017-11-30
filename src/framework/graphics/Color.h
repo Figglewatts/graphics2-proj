@@ -2,6 +2,8 @@
 #define COLOR_H
 #pragma once
 
+#include <glm/glm.hpp>
+
 namespace Framework
 {
     class Color {
@@ -21,6 +23,8 @@ namespace Framework
 		inline float get_g() const { return _g; }
 		inline float get_b() const { return _b; }
 		inline float get_a() const { return _a; }
+
+		inline operator glm::vec4() const { return { _r, _g, _b, _a }; };
 		
 		const static Color WHITE;
 		const static Color BLACK;

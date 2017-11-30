@@ -1,44 +1,24 @@
 #include "Framebuffer.h"
 #include "framework/util/Logger.h"
+#include "FramebufferBuilder.h"
 
 namespace Framework
 {
-	Framebuffer::Framebuffer(unsigned numColorAttachments, GLenum framebufferType, unsigned width, unsigned height, GLint internalFormat, GLenum format, GLenum colorType, bool depth = false)
-		: _width(width), _height(height), _framebufferType(framebufferType)
+	Framebuffer::Framebuffer(FramebufferBuilder *builder)
+		: _fboHandle(builder->_fboHandle)
+		, _colorAttachments(builder->_colorAttachments)
+		, _depthAttachment(builder->_depthAttachment)
+		, _width(builder->_width), _height(builder->_height)
+		, _framebufferType(builder->_framebufferType)
 	{
-		glGenFramebuffers(1, &_fboHandle);
-		glBindFramebuffer(framebufferType, _fboHandle);
-
+		glBindFramebuffer(_framebufferType, _fboHandle);
+		
 		std::vector<GLenum> drawBuffers;
-
-		for (int i = 0; i < numColorAttachments; i++)
+		for (int i = 0; i < _colorAttachments.size(); i++)
 		{
-			unsigned handle;
-			glGenTextures(1, &handle);
-			_colorAttachmentHandles.push_back(handle);
-			glBindTexture(GL_TEXTURE_2D, _colorAttachmentHandles[i]);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, _colorAttachmentHandles[i], 0);
-			/*
-			glBindTexture(GL_TEXTURE_2D, _colorAttachmentHandles[i]);
-			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, _width, _height, 0, format, colorType, nullptr);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, _colorAttachmentHandles[i], 0);
-			*/
 			drawBuffers.push_back(GL_COLOR_ATTACHMENT0 + i);
 		}
-
-		if (depth)
-		{
-			glGenTextures(1, &_depthAttachmentHandle);
-			glBindTexture(GL_TEXTURE_2D, _depthAttachmentHandle);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, _width, _height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthAttachmentHandle, 0);
-		}
-
-		GLenum drawBufs[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-		glDrawBuffers(numColorAttachments, drawBufs);
+		glDrawBuffers(_colorAttachments.size(), drawBuffers.data());
 
 		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		if (status != GL_FRAMEBUFFER_COMPLETE)
@@ -47,13 +27,15 @@ namespace Framework
 			throw std::runtime_error("Could not create framebuffer");
 		}
 
-		glBindFramebuffer(framebufferType, 0);
+		glBindFramebuffer(_framebufferType, 0);
 	}
 
 	Framebuffer::~Framebuffer()
 	{
-		glDeleteTextures(_colorAttachmentHandles.size(), _colorAttachmentHandles.data());
-		if (_depthAttachmentHandle != 0) glDeleteTextures(1, &_depthAttachmentHandle);
+		for (const auto& attachment : _colorAttachments)
+			glDeleteTextures(1, &attachment.handle);
+		
+		if (_depthAttachment.handle != 0) glDeleteTextures(1, &_depthAttachment.handle);
 		glDeleteFramebuffers(1, &_fboHandle);
 	}
 
@@ -65,5 +47,24 @@ namespace Framework
 	void Framebuffer::unbind() const
 	{
 		glBindFramebuffer(_framebufferType, 0);
+	}
+
+	void Framebuffer::resize(glm::ivec2 size)
+	{
+		for (const auto& attachment : _colorAttachments)
+		{
+			glBindTexture(GL_TEXTURE_2D, attachment.handle);
+			glTexImage2D(GL_TEXTURE_2D, 0, attachment.internalFormat, _width, _height, 0, attachment.format, attachment.type, nullptr);
+		}
+
+		if (_depthAttachment.handle != 0)
+		{
+			glBindTexture(GL_TEXTURE_2D, _depthAttachment.handle);
+			glTexImage2D(GL_TEXTURE_2D, 0, _depthAttachment.internalFormat, _width, _height, 0, _depthAttachment.format, _depthAttachment.type, nullptr);
+		}
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		_width = size.x;
+		_height = size.y;
 	}
 }

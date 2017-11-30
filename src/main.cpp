@@ -10,7 +10,10 @@
 #include "framework/graphics/Mesh.h"
 #include "framework/graphics/Camera.h"
 #include "framework/rendering/DeferredRenderer.h"
+#include "framework/rendering/Renderable.h"
 using namespace Framework;
+
+glm::ivec2 initialSize = { 800, 600 };
 
 Framework::Application *app;
 float xPos = 0;
@@ -23,20 +26,20 @@ double accumulator = 0.0;
 
 Camera cam = Camera({ -5.f, 0, 0 }, { 0, 1, 0 }, 0, 0);
 Mesh *m;
+Renderable *carbine;
+glm::mat4 projection;
+DeferredRenderer *renderer;
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
 	app->get_context().viewport(0, 0, width, height);
+	projection = glm::perspective(glm::radians(45.f), (float)width / (float)height, 0.1f, 1000.f);
+	renderer->resize({ width, height });
 }
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode)
 {
 	InputHandler::updateKeys(key, action);
-}
-
-void render(glm::mat4 view, glm::mat4 proj)
-{
-	m->draw(view, proj);
 }
 
 void update()
@@ -61,42 +64,80 @@ void update()
 		camPos += cam.right() * speed;
 	}
 	cam.set_position(camPos);
+
+	float yaw = cam.yaw();
+	if (InputHandler::checkButton("RotLeft", ButtonState::HELD))
+	{
+		yaw -= speed;
+	}
+	else if (InputHandler::checkButton("RotRight", ButtonState::HELD))
+	{
+		yaw += speed;
+	}
+	cam.set_rotation(yaw, cam.pitch());
 }
 
 int main()
 {
 	app = new Framework::Application("Graphics 2 project",
-		3, 2, 800, 600);
+		3, 2, initialSize.x, initialSize.y);
+
+	projection = glm::perspective(glm::radians(46.f), (float)initialSize.x / (float)initialSize.y, 0.1f, 1000.f);;
 
 	glfwSetFramebufferSizeCallback(app->get_window(), framebuffer_size_callback);
+	glfwSetWindowSizeCallback(app->get_window(), framebuffer_size_callback);
 	glfwSetKeyCallback(app->get_window(), key_callback);
 
 	InputHandler::addInput("Up", GLFW_KEY_UP);
 	InputHandler::addInput("Down", GLFW_KEY_DOWN);
 	InputHandler::addInput("Left", GLFW_KEY_LEFT);
 	InputHandler::addInput("Right", GLFW_KEY_RIGHT);
+	InputHandler::addInput("RotLeft", GLFW_KEY_A);
+	InputHandler::addInput("RotRight", GLFW_KEY_D);
 
-	DeferredRenderer renderer = DeferredRenderer(800, 600, &app->get_context());
+	renderer = new DeferredRenderer(800, 600, &app->get_context(), nullptr, nullptr);
+	renderer->init();
+	renderer->setCamera(&cam);
+	renderer->setProjection(projection);
+
+	PointLight light;
+	light.position = { -20, 0, 0 };
+	light.diffuse = Color::RED;
+	light.intensity = 4;
+	light.linearAttenuation = 0.0007;
+	renderer->pointLights().push_back(light);
+
+	PointLight light2;
+	light2.position = { -20, 0, -20 };
+	light2.diffuse = Color::GREEN;
+	light2.intensity = 1;
+	light2.linearAttenuation = 0.003;
+	renderer->pointLights().push_back(light2);
+
+	PointLight light3;
+	light3.position = { -20, 0, 20 };
+	light3.diffuse = Color::BLUE;
+	light3.intensity = 1;
+	light3.linearAttenuation = 0.001;
+	renderer->pointLights().push_back(light3);
+
+	DirectionalLight dirLight;
+	dirLight.diffuse = Color::WHITE;
+	dirLight.ambient = Color::GREEN;
+	dirLight.direction = { 180, 0, 0 };
+	dirLight.intensity = 2;
+	renderer->setDirLight(dirLight);
 
 	Shader *shader = ResourceManager::Load<Shader>("assets/shaders/basicDeferred");
 
-	std::vector<Vertex> vertices = {
-		Vertex(glm::vec3({0.5f, 0.5f, 0.0f}), glm::vec3(0), glm::vec2(0), glm::vec4({1.f, 0.f, 0.f, 1.f})),  // top right
-		Vertex(glm::vec3({0.5f, -0.5f, 0.0f }), glm::vec3(0), glm::vec2(0), glm::vec4({ 0.f, 1.f, 0.f, 1.f})),  // bottom right
-		Vertex(glm::vec3({-0.5f, -0.5f, 0.0f }), glm::vec3(0), glm::vec2(0), glm::vec4({ 0.f, 0.f, 1.f, 1.f})),  // bottom left
-		Vertex(glm::vec3({-0.5f, 0.5f, 0.0f }), glm::vec3(0), glm::vec2(0), glm::vec4({ 1.0f, 0.f, 0.5f, 1.f}))   // top left 
-	};
-	std::vector<unsigned> indices = {  // note that we start from 0!
-		0, 1, 3,   // first triangle
-		1, 2, 3    // second triangle
-	};
-
 	m = ResourceManager::Load<Mesh>("assets/models/h4_carbine.obj");
 	Texture2D *tex = ResourceManager::Load<Texture2D>("assets/textures/storm_covenant_carbine_diffcoloured.png");
-	m->set_shader(shader);
-	m->set_texture(tex);
+	carbine = new Renderable(m, shader, tex);
 
 	glEnable(GL_DEPTH_TEST);
+	glFrontFace(GL_CCW);
+	glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
 
 	while (!glfwWindowShouldClose(app->get_window()))
 	{
@@ -115,16 +156,16 @@ int main()
 			t += dt;
 		}
 
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.f, 0.f, 0.f, 1.f);
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		m->model() = glm::rotate(glm::mat4(1), (float)glfwGetTime(), glm::vec3(0, 1, 0));
+		carbine->model() = glm::rotate(glm::mat4(1), (float)glfwGetTime(), glm::vec3(0, 1, 0));
 
-		glm::mat4 projection = glm::perspective(glm::radians(45.f), 800.f / 600.f, 0.1f, 1000.f);
 		glm::mat4 view = cam.view();
 
-		shader->bind();
-		renderer.render(render, view, projection);
+		renderer->beginFrame();
+		carbine->draw(view, projection);
+		renderer->endFrame();
 		
 		glfwSwapBuffers(app->get_window());
 		glfwPollEvents();
@@ -132,6 +173,7 @@ int main()
 		std::cout << "FPS: " << (1.0 / frameTime) << " dt:" << frameTime << std::endl;
 	}
 	
+	delete renderer;
 	delete app;
 	return 0;
 }

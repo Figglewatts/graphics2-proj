@@ -28,6 +28,8 @@ namespace Framework
 		glm::mat4 view() const;
 		void set_position(glm::vec3 position);
 		void set_rotation(float yaw = 0, float pitch = 0);
+		float& yaw() { return this->_yaw; }
+		float& pitch() { return this->_pitch; }
 	};
 }
 

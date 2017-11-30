@@ -6,11 +6,9 @@
 
 namespace Framework
 {
-	Mesh::Mesh(std::vector<Vertex> verts, std::vector<unsigned> indices, Shader* shader, Texture2D* tex)
+	Mesh::Mesh(std::vector<Vertex> verts, std::vector<unsigned> indices)
 		: _verts(verts)
 		, _indices(indices)
-		, _pShader(shader)
-		, _pTexture(tex)
 	{
 		glGenVertexArrays(1, &_vao);
 		glBindVertexArray(_vao);
@@ -48,18 +46,21 @@ namespace Framework
 		glDeleteVertexArrays(1, &_vao);
 	}
 
-	void Mesh::draw(glm::mat4 view, glm::mat4 proj) const
+	void Mesh::bind() const
 	{
-		_pShader->bind();
-		_pShader->setUniform("model", _model, false);
-		_pShader->setUniform("view", view, false);
-		_pShader->setUniform("projection", proj, false);
-		_pTexture->bind();
 		glBindVertexArray(_vao);
-		glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, nullptr);
+	}
+
+	void Mesh::unbind() const
+	{
 		glBindVertexArray(0);
-		_pShader->unbind();
-		_pTexture->unbind();
+	}
+
+	void Mesh::render() const
+	{
+		this->bind();
+		glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, nullptr);
+		this->unbind();
 	}
 
 }

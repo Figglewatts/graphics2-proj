@@ -10,20 +10,15 @@ namespace Framework
 	private:
 		Framebuffer *_fbo;
 	public:
-		enum GBufferTextures
-		{
-			POSITION,
-			DIFFUSE,
-			NORMAL,
-			COUNT
-		};
-
 		GBuffer(unsigned width, unsigned height);
 		~GBuffer();
 
-		void BindForWrite() const;
-		void BindForRead() const;
-		void SetReadBuffer(GBufferTextures type) const;
+		void StartFrame() const;
+		void BindForGeomPass() const;
+		void BindForStencilPass() const;
+		void BindForLightPass() const;
+		void BindForFinalPass() const;
+		Framebuffer *get_framebuffer() const { return _fbo; }
 	};
 }
 
