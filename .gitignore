@@ -355,3 +355,5 @@ OpenCover/
 !.vscode/extensions.json
 
 log.txt
+
+!assets/*.*
