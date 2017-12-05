@@ -11,6 +11,7 @@
 #include "framework/graphics/Camera.h"
 #include "framework/rendering/DeferredRenderer.h"
 #include "framework/rendering/Renderable.h"
+#include "framework/math/GJK.h"
 using namespace Framework;
 
 glm::ivec2 initialSize = { 800, 600 };
@@ -26,7 +27,8 @@ double accumulator = 0.0;
 
 Camera cam = Camera({ -5.f, 0, 0 }, { 0, 1, 0 }, 0, 0);
 Mesh *m;
-Renderable *carbine;
+Renderable *cube1;
+Renderable *cube2;
 glm::mat4 projection;
 DeferredRenderer *renderer;
 
@@ -48,20 +50,24 @@ void update()
 	float speed = 1.f;
 	if (InputHandler::checkButton("Up", ButtonState::HELD))
 	{
-		camPos += cam.front() * speed;
+		//camPos += cam.front() * speed;
+		cube1->transform().translate({ 0, 0.1f, 0 });
 	}
 	else if (InputHandler::checkButton("Down", ButtonState::HELD))
 	{
-		camPos -= cam.front() * speed;
+		//camPos -= cam.front() * speed;
+		cube1->transform().translate({ 0, -0.1f, 0 });
 	}
 
 	if (InputHandler::checkButton("Left", ButtonState::HELD))
 	{
-		camPos -= cam.right() * speed;
+		//camPos -= cam.right() * speed;
+		cube1->transform().translate({ 0, 0, -0.1f });
 	}
 	else if (InputHandler::checkButton("Right", ButtonState::HELD))
 	{
-		camPos += cam.right() * speed;
+		//camPos += cam.right() * speed;
+		cube1->transform().translate({ 0, 0, 0.1f });
 	}
 	cam.set_position(camPos);
 
@@ -101,21 +107,21 @@ int main()
 	renderer->setProjection(projection);
 
 	PointLight light;
-	light.position = { -20, 0, 0 };
+	light.position = { -3, 0, 0 };
 	light.diffuse = Color::RED;
 	light.intensity = 4;
-	light.linearAttenuation = 0.0007;
+	light.linearAttenuation = 0.01;
 	renderer->pointLights().push_back(light);
 
 	PointLight light2;
-	light2.position = { -20, 0, -20 };
+	light2.position = { -3, 0, 2.f };
 	light2.diffuse = Color::GREEN;
 	light2.intensity = 1;
 	light2.linearAttenuation = 0.003;
 	renderer->pointLights().push_back(light2);
 
 	PointLight light3;
-	light3.position = { -20, 0, 20 };
+	light3.position = { -3, 0, -2.f };
 	light3.diffuse = Color::BLUE;
 	light3.intensity = 1;
 	light3.linearAttenuation = 0.001;
@@ -123,16 +129,19 @@ int main()
 
 	DirectionalLight dirLight;
 	dirLight.diffuse = Color::WHITE;
-	dirLight.ambient = Color::GREEN;
+	dirLight.ambient = {0.4f, 0.4f, 0.4f, 1}; // grey
 	dirLight.direction = { 180, 0, 0 };
 	dirLight.intensity = 2;
 	renderer->setDirLight(dirLight);
 
 	Shader *shader = ResourceManager::Load<Shader>("assets/shaders/basicDeferred");
 
-	m = ResourceManager::Load<Mesh>("assets/models/h4_carbine.obj");
+	m = ResourceManager::Load<Mesh>("assets/models/cube.obj");
 	Texture2D *tex = ResourceManager::Load<Texture2D>("assets/textures/storm_covenant_carbine_diffcoloured.png");
-	carbine = new Renderable(m, shader, tex);
+	cube1 = new Renderable(m, shader, tex);
+	cube2 = new Renderable(m, shader, tex);
+	cube1->transform().translate({ 0, 0, 2 });
+	cube2->transform().translate({ 0, 0, -2 });
 
 	glEnable(GL_DEPTH_TEST);
 	glFrontFace(GL_CCW);
@@ -159,18 +168,25 @@ int main()
 		glClearColor(0.f, 0.f, 0.f, 1.f);
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		carbine->model() = glm::rotate(glm::mat4(1), (float)glfwGetTime(), glm::vec3(0, 1, 0));
+		//cube1->transform().rotate(glm::angleAxis((float)dt, glm::vec3(0, 1, 0)));
+		
+		//cube2->transform().rotate(glm::angleAxis((float)dt, glm::vec3(1, 0, 0)));
 
 		glm::mat4 view = cam.view();
 
 		renderer->beginFrame();
-		carbine->draw(view, projection);
+		cube1->draw(view, projection);
+		cube2->draw(view, projection);
 		renderer->endFrame();
 		
 		glfwSwapBuffers(app->get_window());
 		glfwPollEvents();
 
-		std::cout << "FPS: " << (1.0 / frameTime) << " dt:" << frameTime << std::endl;
+		bool i = GJK::intersect(cube1->rigidbody(), cube2->rigidbody());
+
+		std::cout << i << std::endl;
+
+		//std::cout << "FPS: " << (1.0 / frameTime) << " dt:" << frameTime << std::endl;
 	}
 	
 	delete renderer;

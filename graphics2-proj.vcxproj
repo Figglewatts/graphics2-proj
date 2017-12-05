@@ -163,6 +163,8 @@
     <ClCompile Include="src\framework\input\InputHandler.cpp" />
     <ClCompile Include="src\framework\io\OBJLoad.cpp" />
     <ClCompile Include="src\framework\io\ResourceManager.cpp" />
+    <ClCompile Include="src\framework\math\GJK.cpp" />
+    <ClCompile Include="src\framework\math\Transform.cpp" />
     <ClCompile Include="src\framework\rendering\DeferredRenderer.cpp" />
     <ClCompile Include="src\framework\rendering\GBuffer.cpp" />
     <ClCompile Include="src\framework\rendering\Renderable.cpp" />
@@ -189,6 +191,8 @@
     <ClInclude Include="src\framework\input\InputHandler.h" />
     <ClInclude Include="src\framework\io\OBJLoad.h" />
     <ClInclude Include="src\framework\io\resourcemanager.h" />
+    <ClInclude Include="src\framework\math\GJK.h" />
+    <ClInclude Include="src\framework\math\Transform.h" />
     <ClInclude Include="src\framework\math\Vertex.h" />
     <ClInclude Include="src\framework\rendering\DeferredRenderer.h" />
     <ClInclude Include="src\framework\rendering\GBuffer.h" />

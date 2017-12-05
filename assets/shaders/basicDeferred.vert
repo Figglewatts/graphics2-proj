@@ -16,7 +16,7 @@ out vec2 vert_UV;
 void main()
 {
 	gl_Position = projection * view * model * vec4(in_Pos, 1.0);
-	vert_Norm = (model * vec4(in_Norm, 1.0)).xyz;
+	vert_Norm = mat3(model) * in_Norm;
 	vert_UV = in_UV;
 	vert_WorldPos = (model * vec4(in_Pos, 1.0)).xyz;
 }

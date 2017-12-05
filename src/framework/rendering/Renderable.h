@@ -6,6 +6,7 @@
 #include "framework/graphics/Texture2D.h"
 #include "framework/graphics/Shader.h"
 #include "framework/graphics/Mesh.h"
+#include "framework/math/Transform.h"
 
 namespace Framework
 {
@@ -14,15 +15,16 @@ namespace Framework
 		Mesh *_pMesh;
 		Shader *_pShader;
 		Texture2D *_pTexture;
-		glm::mat4 _model;
+		Transform _transform;
 	public:
-		Renderable(Mesh *mesh, Shader *shader, Texture2D *tex, glm::mat4 model = glm::mat4(1))
-			: _pMesh(mesh), _pShader(shader), _pTexture(tex), _model(model) { }
+		Renderable(Mesh *mesh, Shader *shader, Texture2D *tex, Transform t = Transform())
+			: _pMesh(mesh), _pShader(shader), _pTexture(tex), _transform(t) { }
 		~Renderable();
 
 		void set_shader(Shader* shader) { this->_pShader = shader; }
 		void set_texture(Texture2D* tex) { this->_pTexture = tex; }
-		glm::mat4& model() { return this->_model; }
+		Transform& transform() { return this->_transform; }
+		const std::vector<glm::vec3> rigidbody() const;
 
 		void draw(glm::mat4 view, glm::mat4 proj) const;
 	};
