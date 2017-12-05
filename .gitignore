@@ -356,4 +356,4 @@ OpenCover/
 
 log.txt
 
-!assets/*.*
+!assets/**
