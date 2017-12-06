@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{EA1672E6-D43C-4E69-A7E3-96EDA212652D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -163,8 +163,9 @@
     <ClCompile Include="src\framework\input\InputHandler.cpp" />
     <ClCompile Include="src\framework\io\OBJLoad.cpp" />
     <ClCompile Include="src\framework\io\ResourceManager.cpp" />
-    <ClCompile Include="src\framework\math\GJK.cpp" />
+    <ClCompile Include="src\framework\physics\GJK.cpp" />
     <ClCompile Include="src\framework\math\Transform.cpp" />
+    <ClCompile Include="src\framework\physics\Shapes.cpp" />
     <ClCompile Include="src\framework\rendering\DeferredRenderer.cpp" />
     <ClCompile Include="src\framework\rendering\GBuffer.cpp" />
     <ClCompile Include="src\framework\rendering\Renderable.cpp" />
@@ -191,9 +192,11 @@
     <ClInclude Include="src\framework\input\InputHandler.h" />
     <ClInclude Include="src\framework\io\OBJLoad.h" />
     <ClInclude Include="src\framework\io\resourcemanager.h" />
-    <ClInclude Include="src\framework\math\GJK.h" />
+    <ClInclude Include="src\framework\physics\GJK.h" />
     <ClInclude Include="src\framework\math\Transform.h" />
     <ClInclude Include="src\framework\math\Vertex.h" />
+    <ClInclude Include="src\framework\physics\Rigidbody.h" />
+    <ClInclude Include="src\framework\physics\Shapes.h" />
     <ClInclude Include="src\framework\rendering\DeferredRenderer.h" />
     <ClInclude Include="src\framework\rendering\GBuffer.h" />
     <ClInclude Include="src\framework\rendering\Lights.h" />

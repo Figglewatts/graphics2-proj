@@ -75,10 +75,13 @@
     <ClCompile Include="src\framework\graphics\FramebufferBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\framework\math\GJK.cpp">
+    <ClCompile Include="src\framework\math\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\framework\math\Transform.cpp">
+    <ClCompile Include="src\framework\physics\GJK.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\framework\physics\Shapes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -167,10 +170,16 @@
     <ClInclude Include="src\framework\graphics\FBOAttachment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\framework\math\GJK.h">
+    <ClInclude Include="src\framework\math\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\framework\math\Transform.h">
+    <ClInclude Include="src\framework\physics\GJK.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\framework\physics\Rigidbody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\framework\physics\Shapes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

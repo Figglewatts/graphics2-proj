@@ -1,5 +1,6 @@
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "framework/Application.h"
 #include "framework/util/Logger.h"
@@ -11,7 +12,7 @@
 #include "framework/graphics/Camera.h"
 #include "framework/rendering/DeferredRenderer.h"
 #include "framework/rendering/Renderable.h"
-#include "framework/math/GJK.h"
+#include "framework/physics/GJK.h"
 using namespace Framework;
 
 glm::ivec2 initialSize = { 800, 600 };
@@ -27,8 +28,10 @@ double accumulator = 0.0;
 
 Camera cam = Camera({ -5.f, 0, 0 }, { 0, 1, 0 }, 0, 0);
 Mesh *m;
+Mesh *sphereMesh;
 Renderable *cube1;
 Renderable *cube2;
+Renderable *sphere;
 glm::mat4 projection;
 DeferredRenderer *renderer;
 
@@ -81,6 +84,25 @@ void update()
 		yaw += speed;
 	}
 	cam.set_rotation(yaw, cam.pitch());
+
+	ConvexHull cubeShape;
+	cubeShape.verts = cube1->rigidbody();
+	Rigidbody cubeRB(cubeShape, &cube1->transform());
+
+	ConvexHull cubeShape2;
+	cubeShape2.verts = cube2->rigidbody();
+	Rigidbody cube2RB(cubeShape2, &cube2->transform());
+
+	Sphere sphereShape;
+	sphereShape.radius = 1;
+	Rigidbody sphereRB(sphereShape, &sphere->transform());
+
+	Collision c;
+	if (GJK::intersect(cubeRB, sphereRB, &c))
+	{
+		cube1->transform().translate(c.normal * c.depth);
+		std::cout << "coll" << std::endl;
+	}
 }
 
 int main()
@@ -137,11 +159,14 @@ int main()
 	Shader *shader = ResourceManager::Load<Shader>("assets/shaders/basicDeferred");
 
 	m = ResourceManager::Load<Mesh>("assets/models/cube.obj");
+	sphereMesh = ResourceManager::Load<Mesh>("assets/models/sphere.obj");
 	Texture2D *tex = ResourceManager::Load<Texture2D>("assets/textures/storm_covenant_carbine_diffcoloured.png");
 	cube1 = new Renderable(m, shader, tex);
 	cube2 = new Renderable(m, shader, tex);
+	sphere = new Renderable(sphereMesh, shader, tex);
 	cube1->transform().translate({ 0, 0, 2 });
-	cube2->transform().translate({ 0, 0, -2 });
+	//cube2->transform().translate({ 0, 0, -2 });
+	sphere->transform().translate({ 0, 0, -2 });
 
 	glEnable(GL_DEPTH_TEST);
 	glFrontFace(GL_CCW);
@@ -176,15 +201,12 @@ int main()
 
 		renderer->beginFrame();
 		cube1->draw(view, projection);
-		cube2->draw(view, projection);
+		sphere->draw(view, projection);
+		//cube2->draw(view, projection);
 		renderer->endFrame();
 		
 		glfwSwapBuffers(app->get_window());
 		glfwPollEvents();
-
-		bool i = GJK::intersect(cube1->rigidbody(), cube2->rigidbody());
-
-		std::cout << i << std::endl;
 
 		//std::cout << "FPS: " << (1.0 / frameTime) << " dt:" << frameTime << std::endl;
 	}

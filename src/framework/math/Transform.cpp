@@ -8,6 +8,10 @@ namespace Framework
 	{
 		return glm::translate(glm::mat4(1), _position) * glm::scale(glm::mat4(1), _scale) *  glm::toMat4(_rotation);
 	}
+	glm::vec3 Transform::convert(const glm::vec3 v) const
+	{
+		return glm::vec4(v, 1) * glm::transpose(matrix());
+	}
 	Transform & Transform::translate(glm::vec3 t)
 	{
 		this->_position += t;

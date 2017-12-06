@@ -14,8 +14,8 @@ namespace Framework
 		std::vector<glm::vec3> _rigidbody;
 		for (const auto& v : _pMesh->verts())
 		{
-			const glm::vec4 worldPos = glm::vec4(v.Position, 1) * glm::transpose(_transform.matrix());
-			_rigidbody.push_back(worldPos);
+			//const glm::vec4 worldPos = glm::vec4(v.Position, 1) * glm::transpose(_transform.matrix());
+			_rigidbody.push_back(v.Position);
 		}
 		return _rigidbody;
 	}
