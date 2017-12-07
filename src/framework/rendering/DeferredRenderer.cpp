@@ -80,7 +80,7 @@ namespace Framework
 		delete _directionalLightBoundingQuad;
 	}
 
-	void DeferredRenderer::PointLightPass(const PointLight& light)
+	void DeferredRenderer::PointLightPass(const PointLight* light)
 	{
 		_gBuffer->BindForLightPass();
 		
@@ -103,13 +103,13 @@ namespace Framework
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 
-		_pointLightShader->setUniform("light.position", light.position);
-		_pointLightShader->setUniform("light.diffuse", light.diffuse);
-		_pointLightShader->setUniform("light.intensity", light.intensity);
-		_pointLightShader->setUniform("light.linearAttenuation", light.linearAttenuation);
-		_pointLightShader->setUniform("light.expAttenuation", light.expAttenuation);
+		_pointLightShader->setUniform("light.position", light->position);
+		_pointLightShader->setUniform("light.diffuse", light->diffuse);
+		_pointLightShader->setUniform("light.intensity", light->intensity);
+		_pointLightShader->setUniform("light.linearAttenuation", light->linearAttenuation);
+		_pointLightShader->setUniform("light.expAttenuation", light->expAttenuation);
 		const float boundingSphereScale = PointLightBoundingSphere(light);
-		glm::mat4 model = glm::translate(glm::mat4(1), light.position);
+		glm::mat4 model = glm::translate(glm::mat4(1), light->position);
 		model = glm::scale(model, glm::vec3(boundingSphereScale));
 		_pointLightShader->setUniform("ModelMatrix", model, false);
 		_pointLightBoundingSphere->render();
@@ -120,7 +120,7 @@ namespace Framework
 	}
 
 	// from: http://ogldev.atspace.co.uk/www/tutorial36/tutorial36.html
-	float DeferredRenderer::PointLightBoundingSphere(const PointLight & light) const
+	float DeferredRenderer::PointLightBoundingSphere(const PointLight* light) const
 	{
 		//float MaxChannel = fmax(fmax(light.diffuse.get_r(), light.diffuse.get_g()), light.diffuse.get_b());
 
@@ -129,7 +129,7 @@ namespace Framework
 			/
 			(2 * light.expAttenuation);
 		return ret;*/
-		return glm::sqrt(63.f / light.linearAttenuation);
+		return glm::sqrt(63.f / light->linearAttenuation);
 	}
 
 	void DeferredRenderer::DirectionalLightPass()
@@ -160,7 +160,7 @@ namespace Framework
 		glDisable(GL_BLEND);
 	}
 
-	void DeferredRenderer::StencilPass(const PointLight& light)
+	void DeferredRenderer::StencilPass(const PointLight* light)
 	{
 		_nullShader->bind();
 
@@ -180,7 +180,7 @@ namespace Framework
 		_nullShader->setUniform("ViewMatrix", this->_pCamera->view(), false);
 		_nullShader->setUniform("ProjectionMatrix", this->_projection, false);
 		const float boundingSphereScale = PointLightBoundingSphere(light);
-		glm::mat4 model = glm::translate(glm::mat4(1), light.position);
+		glm::mat4 model = glm::translate(glm::mat4(1), light->position);
 		model = glm::scale(model, glm::vec3(boundingSphereScale));
 		_nullShader->setUniform("ModelMatrix", model, false);
 		_pointLightBoundingSphere->render();

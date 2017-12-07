@@ -20,14 +20,14 @@ namespace Framework
 		Shader *_dirLightShader;
 		Shader *_nullShader;
 		DirectionalLight _dirLight;
-		std::vector<PointLight> _pointLights;
+		std::vector<PointLight*> _pointLights;
 		Mesh *_pointLightBoundingSphere;
 		Mesh *_directionalLightBoundingQuad;
 
-		void PointLightPass(const PointLight& light);
-		float PointLightBoundingSphere(const PointLight& light) const;
+		void PointLightPass(const PointLight* light);
+		float PointLightBoundingSphere(const PointLight* light) const;
 		void DirectionalLightPass();
-		void StencilPass(const PointLight& light);
+		void StencilPass(const PointLight* light);
 		void FinalPass();
 	public:
 		DeferredRenderer(unsigned width, unsigned height, GLContext *context, Shader *pointLightShader, Shader *dirLightShader);
@@ -38,7 +38,7 @@ namespace Framework
 		~DeferredRenderer();
 
 		void setDirLight(DirectionalLight light) { this->_dirLight = light; }
-		std::vector<PointLight>& pointLights() { return _pointLights; }
+		std::vector<PointLight*>& pointLights() { return _pointLights; }
 	};
 }
 

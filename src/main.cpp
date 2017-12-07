@@ -1,20 +1,14 @@
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/string_cast.hpp>
 
 #include "framework/Application.h"
-#include "framework/util/Logger.h"
 #include "framework/input/InputHandler.h"
 #include "framework/graphics/Shader.h"
 
 #include "framework/io/ResourceManager.h"
-#include "framework/graphics/Mesh.h"
 #include "framework/graphics/Camera.h"
 #include "framework/rendering/DeferredRenderer.h"
-#include "framework/rendering/Renderable.h"
-#include "framework/physics/GJK.h"
 #include "framework/util/LineDrawer.h"
-#include "framework/physics/Octree.h"
 #include "framework/rendering/Scene.h"
 using namespace Framework;
 
@@ -30,11 +24,6 @@ double currentTime = glfwGetTime();
 double accumulator = 0.0;
 
 Camera cam = Camera({ -5.f, 0, 0 }, { 0, 1, 0 }, 0, 0);
-Mesh *m;
-Mesh *sphereMesh;
-Renderable *cube1;
-Renderable *cube2;
-Renderable *sphere;
 glm::mat4 projection;
 DeferredRenderer *renderer;
 
@@ -50,45 +39,6 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode)
 {
 	InputHandler::updateKeys(key, action);
-}
-
-void update()
-{
-	glm::vec3 camPos = cam.get_position();
-	float speed = 1.f;
-	if (InputHandler::checkButton("Up", ButtonState::HELD))
-	{
-		//camPos += cam.front() * speed;
-		cube1->transform().translate({ 0, 0.1f, 0 });
-	}
-	else if (InputHandler::checkButton("Down", ButtonState::HELD))
-	{
-		//camPos -= cam.front() * speed;
-		cube1->transform().translate({ 0, -0.1f, 0 });
-	}
-
-	if (InputHandler::checkButton("Left", ButtonState::HELD))
-	{
-		//camPos -= cam.right() * speed;
-		cube1->transform().translate({ 0, 0, -0.1f });
-	}
-	else if (InputHandler::checkButton("Right", ButtonState::HELD))
-	{
-		//camPos += cam.right() * speed;
-		cube1->transform().translate({ 0, 0, 0.1f });
-	}
-	cam.set_position(camPos);
-
-	float yaw = cam.yaw();
-	if (InputHandler::checkButton("RotLeft", ButtonState::HELD))
-	{
-		yaw -= speed;
-	}
-	else if (InputHandler::checkButton("RotRight", ButtonState::HELD))
-	{
-		yaw += speed;
-	}
-	cam.set_rotation(yaw, cam.pitch());
 }
 
 int main()
@@ -116,27 +66,6 @@ int main()
 
 	LineDrawer::init();
 
-	PointLight light;
-	light.position = { -3, 0, 0 };
-	light.diffuse = Color::RED;
-	light.intensity = 4;
-	light.linearAttenuation = 0.01;
-	renderer->pointLights().push_back(light);
-
-	PointLight light2;
-	light2.position = { -3, 0, 2.f };
-	light2.diffuse = Color::GREEN;
-	light2.intensity = 1;
-	light2.linearAttenuation = 0.003;
-	renderer->pointLights().push_back(light2);
-
-	PointLight light3;
-	light3.position = { -3, 0, -2.f };
-	light3.diffuse = Color::BLUE;
-	light3.intensity = 1;
-	light3.linearAttenuation = 0.001;
-	renderer->pointLights().push_back(light3);
-
 	DirectionalLight dirLight;
 	dirLight.diffuse = Color::WHITE;
 	dirLight.ambient = {0.4f, 0.4f, 0.4f, 1}; // grey
@@ -144,25 +73,7 @@ int main()
 	dirLight.intensity = 2;
 	renderer->setDirLight(dirLight);
 
-	Mesh linePoints = Mesh({ 
-		Vertex({ 0, 0, 0 }, glm::vec3(0), glm::vec2(0), glm::vec4(1)),
-		Vertex({ 1, 1, 1 }, glm::vec3(0), glm::vec2(0), glm::vec4(1)), }, 
-	{ 0, 1 });
-
 	Shader *shader = ResourceManager::Load<Shader>("assets/shaders/basicDeferred");
-
-	m = ResourceManager::Load<Mesh>("assets/models/cube.obj");
-	sphereMesh = ResourceManager::Load<Mesh>("assets/models/sphere.obj");
-	Texture2D *tex = ResourceManager::Load<Texture2D>("assets/textures/storm_covenant_carbine_diffcoloured.png");
-	cube1 = new Renderable(m, shader, tex, true);
-	cube2 = new Renderable(m, shader, tex);
-	sphere = new Renderable(sphereMesh, shader, tex, true);
-	cube1->transform().translate({ 0, 0, 2 });
-	//cube2->transform().translate({ 0, 0, -2 });
-	sphere->transform().translate({ 0, 0, -2 });
-
-	scene.add(cube1);
-	scene.add(sphere);
 
 	glEnable(GL_DEPTH_TEST);
 	glFrontFace(GL_CCW);
@@ -181,14 +92,12 @@ int main()
 		while (accumulator >= dt)
 		{
 			InputHandler::handleInput();
-			update();
 			scene.update(frameTime);
 			accumulator -= dt;
 			t += dt;
 		}
 
 		glClearColor(0.f, 0.f, 0.f, 1.f);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glm::mat4 view = cam.view();
 
@@ -197,13 +106,9 @@ int main()
 		scene.render(projection, view);
 
 		renderer->endFrame();
-
-		LineDrawer::drawLine(linePoints, Color::GREEN, projection, view);
 		
 		glfwSwapBuffers(app->get_window());
 		glfwPollEvents();
-
-		//std::cout << "FPS: " << (1.0 / frameTime) << " dt:" << frameTime << std::endl;
 	}
 	
 	delete renderer;
