@@ -4,15 +4,17 @@
 
 #include "Shapes.h"
 #include "framework/math/Transform.h"
+#include "AABB.h"
+#include <memory>
 
 namespace Framework
 {
 	struct Rigidbody
 	{
-		Shape& shape;
+		std::unique_ptr<Shape> shape;
 		Transform *toWorld;
-
-		Rigidbody(Shape& s, Transform* t) : shape(s), toWorld(t) {}
+		AABB boundingVolume;
+		Rigidbody(std::unique_ptr<Shape> shape, Transform* t) : shape(std::move(shape)), toWorld(t) {}
 	};
 }
 

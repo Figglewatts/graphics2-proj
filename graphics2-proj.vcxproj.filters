@@ -84,6 +84,12 @@
     <ClCompile Include="src\framework\physics\Shapes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\framework\physics\Octree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\framework\util\LineDrawer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\date.h">
@@ -182,6 +188,15 @@
     <ClInclude Include="src\framework\physics\Shapes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\framework\physics\Octree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\framework\physics\AABB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\framework\util\LineDrawer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\basic.frag" />
@@ -194,5 +209,7 @@
     <None Include="assets\shaders\dirLightPass.frag" />
     <None Include="assets\shaders\null.vert" />
     <None Include="assets\shaders\null.frag" />
+    <None Include="assets\shaders\line.vert" />
+    <None Include="assets\shaders\line.frag" />
   </ItemGroup>
 </Project>

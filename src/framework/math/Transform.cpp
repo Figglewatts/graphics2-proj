@@ -1,5 +1,7 @@
 #include "Transform.h"
 
+#include "framework/physics/AABB.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Framework
@@ -12,6 +14,12 @@ namespace Framework
 	{
 		return glm::vec4(v, 1) * glm::transpose(matrix());
 	}
+
+	AABB Transform::convert(const AABB & aabb) const
+	{
+		return { this->matrix() * glm::vec4(aabb.min, 1), this->matrix() * glm::vec4(aabb.max, 1) };
+	}
+
 	Transform & Transform::translate(glm::vec3 t)
 	{
 		this->_position += t;

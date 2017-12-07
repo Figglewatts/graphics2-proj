@@ -58,6 +58,15 @@ namespace Framework
 
 		DirectionalLightPass();
 		FinalPass();
+
+		// now bind for forward rendering after the deferred stage
+		glm::ivec2 fboSize = _gBuffer->get_framebuffer()->size();
+
+		// blit depth info to draw buffer
+		glDrawBuffer(GL_DEPTH_ATTACHMENT);
+		glBlitFramebuffer(0, 0, fboSize.x, fboSize.y, 0, 0, fboSize.x, fboSize.y, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	void DeferredRenderer::resize(glm::ivec2 size)

@@ -13,6 +13,8 @@
 #include "framework/rendering/DeferredRenderer.h"
 #include "framework/rendering/Renderable.h"
 #include "framework/physics/GJK.h"
+#include "framework/util/LineDrawer.h"
+#include "framework/physics/Octree.h"
 using namespace Framework;
 
 glm::ivec2 initialSize = { 800, 600 };
@@ -35,6 +37,8 @@ Renderable *sphere;
 glm::mat4 projection;
 DeferredRenderer *renderer;
 
+Octree octree(1024);
+
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
 	app->get_context().viewport(0, 0, width, height);
@@ -49,6 +53,10 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 
 void update()
 {
+	octree.clear();
+	octree.insert(cube1->rigidbody());
+	octree.insert(sphere->rigidbody());
+	
 	glm::vec3 camPos = cam.get_position();
 	float speed = 1.f;
 	if (InputHandler::checkButton("Up", ButtonState::HELD))
@@ -85,24 +93,19 @@ void update()
 	}
 	cam.set_rotation(yaw, cam.pitch());
 
-	ConvexHull cubeShape;
-	cubeShape.verts = cube1->rigidbody();
-	Rigidbody cubeRB(cubeShape, &cube1->transform());
-
-	ConvexHull cubeShape2;
-	cubeShape2.verts = cube2->rigidbody();
-	Rigidbody cube2RB(cubeShape2, &cube2->transform());
-
-	Sphere sphereShape;
-	sphereShape.radius = 1;
-	Rigidbody sphereRB(sphereShape, &sphere->transform());
-
-	Collision c;
-	if (GJK::intersect(cubeRB, sphereRB, &c))
+	auto neighb = octree.neighbours(cube1->rigidbody());
+	for (const auto& n : neighb)
 	{
-		cube1->transform().translate(c.normal * c.depth);
-		std::cout << "coll" << std::endl;
+		if (n == cube1->rigidbody()) continue;
+		
+		Collision c;
+		if (GJK::intersect(*cube1->rigidbody(), *n, &c))
+		{
+			cube1->transform().translate(c.normal * c.depth);
+			std::cout << "coll" << std::endl;
+		}
 	}
+	
 }
 
 int main()
@@ -127,6 +130,8 @@ int main()
 	renderer->init();
 	renderer->setCamera(&cam);
 	renderer->setProjection(projection);
+
+	LineDrawer::init();
 
 	PointLight light;
 	light.position = { -3, 0, 0 };
@@ -156,17 +161,25 @@ int main()
 	dirLight.intensity = 2;
 	renderer->setDirLight(dirLight);
 
+	Mesh linePoints = Mesh({ 
+		Vertex({ 0, 0, 0 }, glm::vec3(0), glm::vec2(0), glm::vec4(1)),
+		Vertex({ 1, 1, 1 }, glm::vec3(0), glm::vec2(0), glm::vec4(1)), }, 
+	{ 0, 1 });
+
 	Shader *shader = ResourceManager::Load<Shader>("assets/shaders/basicDeferred");
 
 	m = ResourceManager::Load<Mesh>("assets/models/cube.obj");
 	sphereMesh = ResourceManager::Load<Mesh>("assets/models/sphere.obj");
 	Texture2D *tex = ResourceManager::Load<Texture2D>("assets/textures/storm_covenant_carbine_diffcoloured.png");
-	cube1 = new Renderable(m, shader, tex);
+	cube1 = new Renderable(m, shader, tex, true);
 	cube2 = new Renderable(m, shader, tex);
-	sphere = new Renderable(sphereMesh, shader, tex);
+	sphere = new Renderable(sphereMesh, shader, tex, true);
 	cube1->transform().translate({ 0, 0, 2 });
 	//cube2->transform().translate({ 0, 0, -2 });
 	sphere->transform().translate({ 0, 0, -2 });
+
+	octree.insert(cube1->rigidbody());
+	octree.insert(sphere->rigidbody());
 
 	glEnable(GL_DEPTH_TEST);
 	glFrontFace(GL_CCW);
@@ -203,7 +216,10 @@ int main()
 		cube1->draw(view, projection);
 		sphere->draw(view, projection);
 		//cube2->draw(view, projection);
+
 		renderer->endFrame();
+
+		LineDrawer::drawLine(linePoints, Color::GREEN, projection, view);
 		
 		glfwSwapBuffers(app->get_window());
 		glfwPollEvents();

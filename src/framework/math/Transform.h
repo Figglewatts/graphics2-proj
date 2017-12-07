@@ -7,6 +7,8 @@
 
 namespace Framework
 {
+	struct AABB;
+
 	class Transform
 	{
 	private:
@@ -25,6 +27,7 @@ namespace Framework
 		glm::quat rotation() const { return _rotation; }
 		glm::mat4 matrix() const;
 		glm::vec3 convert(const glm::vec3 v) const;
+		AABB convert(const AABB& aabb) const;
 		
 		Transform& translate(glm::vec3 t);
 		Transform& scale(glm::vec3 scale);

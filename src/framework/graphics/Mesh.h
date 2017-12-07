@@ -24,7 +24,9 @@ namespace Framework
 		Mesh(std::vector<Vertex> verts, std::vector<unsigned> indices);
 		~Mesh();
 
+		const std::vector<Vertex>& verts() const { return _verts; }
 		std::vector<Vertex>& verts() { return _verts; }
+		const std::vector<unsigned>& indices() const { return _indices; }
 		std::vector<unsigned>& indices() { return _indices; }
 		void bind() const;
 		void unbind() const;

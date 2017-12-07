@@ -95,7 +95,7 @@ namespace Framework
 		// triangular prism along triangle's normal -- is it above or below?
 		if (glm::dot(abc, ao) > -GJK_EPSILON)
 		{
-			// origin is above, build tetrahedron
+			// origin is above, build tetrahedron that way
 			d = c;
 			c = b;
 			b = a;
@@ -103,7 +103,7 @@ namespace Framework
 		}
 		else
 		{
-			// origin is below, build tetrahedron
+			// origin is below, build tetrahedron that way
 			d = b; // different winding order to preserve direction
 			b = a;
 			v = -abc;
@@ -204,7 +204,7 @@ namespace Framework
 
 	bool GJK::gjk_test_collision(const Rigidbody& A, const Rigidbody& B, SupportPoint& a)
 	{
-		v = A.toWorld->convert(A.shape.getCenter()) - B.toWorld->convert(B.shape.getCenter());
+		v = A.toWorld->convert(A.shape->getCenter()) - B.toWorld->convert(B.shape->getCenter());
 		n = 0; // empty simplex
 
 		unsigned steps = 0;
@@ -277,8 +277,8 @@ namespace Framework
 	{
 		// figure out the furthest points in either direction
 		SupportPoint ret;
-		ret.supA = A.toWorld->convert(A.shape.support(dir));
-		ret.supB = B.toWorld->convert(B.shape.support(-dir));
+		ret.supA = A.toWorld->convert(A.shape->support(dir));
+		ret.supB = B.toWorld->convert(B.shape->support(-dir));
 		ret.v = ret.supA - ret.supB;
 		return ret;
 	}

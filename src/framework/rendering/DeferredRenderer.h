@@ -34,7 +34,7 @@ namespace Framework
 		void init() override;
 		void resize(glm::ivec2 size) override;
 		void beginFrame() override;
-		void endFrame() override;;
+		void endFrame() override;
 		~DeferredRenderer();
 
 		void setDirLight(DirectionalLight light) { this->_dirLight = light; }
