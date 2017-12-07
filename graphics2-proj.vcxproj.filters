@@ -90,6 +90,9 @@
     <ClCompile Include="src\framework\util\LineDrawer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\framework\rendering\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\date.h">
@@ -159,9 +162,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\framework\rendering\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\framework\rendering\SceneNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\framework\rendering\Lights.h">

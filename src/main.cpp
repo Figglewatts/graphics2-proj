@@ -15,6 +15,7 @@
 #include "framework/physics/GJK.h"
 #include "framework/util/LineDrawer.h"
 #include "framework/physics/Octree.h"
+#include "framework/rendering/Scene.h"
 using namespace Framework;
 
 glm::ivec2 initialSize = { 800, 600 };
@@ -37,7 +38,7 @@ Renderable *sphere;
 glm::mat4 projection;
 DeferredRenderer *renderer;
 
-Octree octree(1024);
+Scene scene;
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
@@ -53,10 +54,6 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 
 void update()
 {
-	octree.clear();
-	octree.insert(cube1->rigidbody());
-	octree.insert(sphere->rigidbody());
-	
 	glm::vec3 camPos = cam.get_position();
 	float speed = 1.f;
 	if (InputHandler::checkButton("Up", ButtonState::HELD))
@@ -92,20 +89,6 @@ void update()
 		yaw += speed;
 	}
 	cam.set_rotation(yaw, cam.pitch());
-
-	auto neighb = octree.neighbours(cube1->rigidbody());
-	for (const auto& n : neighb)
-	{
-		if (n == cube1->rigidbody()) continue;
-		
-		Collision c;
-		if (GJK::intersect(*cube1->rigidbody(), *n, &c))
-		{
-			cube1->transform().translate(c.normal * c.depth);
-			std::cout << "coll" << std::endl;
-		}
-	}
-	
 }
 
 int main()
@@ -178,8 +161,8 @@ int main()
 	//cube2->transform().translate({ 0, 0, -2 });
 	sphere->transform().translate({ 0, 0, -2 });
 
-	octree.insert(cube1->rigidbody());
-	octree.insert(sphere->rigidbody());
+	scene.add(cube1);
+	scene.add(sphere);
 
 	glEnable(GL_DEPTH_TEST);
 	glFrontFace(GL_CCW);
@@ -194,11 +177,12 @@ int main()
 
 		accumulator += frameTime;
 
-		// only update at specified delta-time
+		// update as fast as we can, only render at specified framerate
 		while (accumulator >= dt)
 		{
 			InputHandler::handleInput();
 			update();
+			scene.update(frameTime);
 			accumulator -= dt;
 			t += dt;
 		}
@@ -206,16 +190,11 @@ int main()
 		glClearColor(0.f, 0.f, 0.f, 1.f);
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//cube1->transform().rotate(glm::angleAxis((float)dt, glm::vec3(0, 1, 0)));
-		
-		//cube2->transform().rotate(glm::angleAxis((float)dt, glm::vec3(1, 0, 0)));
-
 		glm::mat4 view = cam.view();
 
 		renderer->beginFrame();
-		cube1->draw(view, projection);
-		sphere->draw(view, projection);
-		//cube2->draw(view, projection);
+		
+		scene.render(projection, view);
 
 		renderer->endFrame();
 

@@ -170,6 +170,7 @@
     <ClCompile Include="src\framework\rendering\DeferredRenderer.cpp" />
     <ClCompile Include="src\framework\rendering\GBuffer.cpp" />
     <ClCompile Include="src\framework\rendering\Renderable.cpp" />
+    <ClCompile Include="src\framework\rendering\Scene.cpp" />
     <ClCompile Include="src\framework\util\Convenience.cpp" />
     <ClCompile Include="src\framework\util\LineDrawer.cpp" />
     <ClCompile Include="src\framework\util\Logger.cpp" />
@@ -207,7 +208,6 @@
     <ClInclude Include="src\framework\rendering\Renderable.h" />
     <ClInclude Include="src\framework\rendering\Renderer.h" />
     <ClInclude Include="src\framework\rendering\Scene.h" />
-    <ClInclude Include="src\framework\rendering\SceneNode.h" />
     <ClInclude Include="src\framework\util\Convenience.h" />
     <ClInclude Include="src\framework\util\LineDrawer.h" />
     <ClInclude Include="src\framework\util\Logger.h" />
