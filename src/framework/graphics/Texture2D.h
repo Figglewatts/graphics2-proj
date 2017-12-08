@@ -17,7 +17,7 @@ namespace Framework
 		Texture2D(const std::string& filePath,
 			GLint format = GL_RGBA, GLenum type = GL_UNSIGNED_BYTE,
 			GLint minFilter = GL_LINEAR_MIPMAP_LINEAR, GLint magFilter = GL_LINEAR,
-			GLint sWrap = GL_CLAMP, GLint tWrap = GL_CLAMP);
+			GLint sWrap = GL_REPEAT, GLint tWrap = GL_REPEAT);
 
 		void bind() const;
 		void unbind() const;

@@ -93,6 +93,12 @@
     <ClCompile Include="src\framework\rendering\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\framework\graphics\Cubemap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\framework\graphics\Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\date.h">
@@ -197,6 +203,12 @@
     <ClInclude Include="src\framework\util\LineDrawer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\framework\graphics\Cubemap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\framework\graphics\Skybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\basic.frag" />
@@ -211,5 +223,9 @@
     <None Include="assets\shaders\null.frag" />
     <None Include="assets\shaders\line.vert" />
     <None Include="assets\shaders\line.frag" />
+    <None Include="assets\shaders\planetDeferred.vert" />
+    <None Include="assets\shaders\planetDeferred.frag" />
+    <None Include="assets\shaders\skybox.vert" />
+    <None Include="assets\shaders\skybox.frag" />
   </ItemGroup>
 </Project>

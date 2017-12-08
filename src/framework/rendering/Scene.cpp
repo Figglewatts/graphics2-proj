@@ -7,7 +7,8 @@ namespace Framework
 		_octree.clear();
 		for (const auto& obj : _objects)
 		{
-			_octree.insert(obj->rigidbody());
+			if (obj->collideable())
+				_octree.insert(obj->rigidbody());
 		}
 	}
 
@@ -17,7 +18,8 @@ namespace Framework
 
 	void Scene::add(Renderable* object)
 	{
-		_octree.insert(object->rigidbody());
+		if (object->collideable())
+			_octree.insert(object->rigidbody());
 		_objects.push_back(object);
 	}
 
@@ -39,19 +41,18 @@ namespace Framework
 
 			obj->update(delta);
 
+			if (!obj->collideable()) continue;
+
 			// calculate collision with octree neighbours
 			_octreeNeighbours = _octree.neighbours(obj->rigidbody());
 			for (auto& neighbour : _octreeNeighbours)
 			{
 				if (obj->rigidbody() == neighbour) continue;
 				
-				if (obj->collideable())
+				Collision c;
+				if (GJK::intersect(*obj->rigidbody(), *neighbour, &c))
 				{
-					Collision c;
-					if (GJK::intersect(*obj->rigidbody(), *neighbour, &c))
-					{
-						obj->onCollide(c, neighbour);
-					}
+					obj->onCollide(c, neighbour);
 				}
 			}
 		}

@@ -54,19 +54,14 @@ namespace Framework
 			PointLightPass(pointLight);
 		}
 
-		glDisable(GL_STENCIL_TEST);
-
 		DirectionalLightPass();
+
 		FinalPass();
 
-		// now bind for forward rendering after the deferred stage
-		glm::ivec2 fboSize = _gBuffer->get_framebuffer()->size();
-
-		// blit depth info to draw buffer
-		glDrawBuffer(GL_DEPTH_ATTACHMENT);
-		glBlitFramebuffer(0, 0, fboSize.x, fboSize.y, 0, 0, fboSize.x, fboSize.y, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glDepthMask(GL_TRUE);
+		glEnable(GL_DEPTH_TEST);
+		glm::ivec2 size = this->_gBuffer->get_framebuffer()->size();
+		glBlitFramebuffer(0, 0, size.x, size.y, 0, 0, size.x, size.y, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 	}
 
 	void DeferredRenderer::resize(glm::ivec2 size)
@@ -148,6 +143,7 @@ namespace Framework
 		_dirLightShader->setUniform("light.diffuse", _dirLight.diffuse);
 		_dirLightShader->setUniform("light.ambient", _dirLight.ambient);
 		_dirLightShader->setUniform("light.intensity", _dirLight.intensity);
+		_dirLightShader->setUniform("ViewPos", _pCamera->get_position());
 
 		glDisable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);

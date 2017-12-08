@@ -15,7 +15,8 @@ namespace Framework
 		glm::tvec4<float> Color;
 
 		Vertex() {}
-		Vertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 uv, glm::vec4 col)
+		Vertex(glm::vec3 pos, glm::vec3 norm = glm::vec3(0), glm::vec2 uv = glm::vec2(0), 
+				glm::vec4 col = glm::vec4(1))
 			: Position(pos), Normal(norm), TexCoord(uv), Color(col) { }
 
 		bool operator==(const Vertex& other) const

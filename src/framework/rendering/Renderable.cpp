@@ -19,7 +19,7 @@ namespace Framework
 	}
 
 	Renderable::Renderable(Mesh * mesh, Shader * shader, Texture2D * tex, bool collision, Transform t)
-		: _pMesh(mesh), _pShader(shader), _pTexture(tex), _collision(collision), _transform(t)
+		: _pMesh(mesh), _pShader(shader), _collision(collision), _transform(t)
 	{
 		if (_collision)
 		{
@@ -27,19 +27,24 @@ namespace Framework
 			collider->verts = rigidbody_points();
 			_pRigidbody = new Rigidbody(std::unique_ptr<Shape>(collider), &_transform);
 		}
+		_textures.push_back(tex);
 	}
 
 	Renderable::Renderable(Mesh * mesh, Shader * shader, Texture2D * tex, Shape *collisionShape, Transform t)
-		: _pMesh(mesh), _pShader(shader), _pTexture(tex), _collision(true), _transform(t)
+		: _pMesh(mesh), _pShader(shader), _collision(true), _transform(t)
 	{
 		_pRigidbody = new Rigidbody(std::unique_ptr<Shape>(collisionShape), &_transform);
+		_textures.push_back(tex);
 	}
 
 	Renderable::~Renderable()
 	{
 		_pMesh->unbind();
 		_pShader->unbind();
-		_pTexture->unbind();
+		for (const auto& tex : _textures)
+		{
+			tex->unbind();
+		}
 		delete _pRigidbody;
 	}
 
@@ -57,12 +62,22 @@ namespace Framework
 	void Renderable::draw(glm::mat4 view, glm::mat4 proj) const
 	{
 		_pShader->bind();
-		_pShader->setUniform("model", _transform.matrix(), false);
-		_pShader->setUniform("view", view, false);
-		_pShader->setUniform("projection", proj, false);
-		_pTexture->bind();
+		_pShader->setUniform("ModelMatrix", _transform.matrix(), false);
+		_pShader->setUniform("ViewMatrix", view, false);
+		_pShader->setUniform("ProjectionMatrix", proj, false);
+		_pShader->setUniform("tex1", 0);
+		_pShader->setUniform("tex2", 1);
+		for (int i = 0; i < _textures.size(); i++)
+		{
+			glActiveTexture(GL_TEXTURE0 + i);
+			_textures[i]->bind();
+		}
 		_pMesh->render();
 		_pShader->unbind();
-		_pTexture->unbind();
+		for (const auto& tex : _textures)
+		{
+			tex->unbind();
+		}
+		glActiveTexture(GL_TEXTURE0);
 	}
 }

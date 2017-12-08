@@ -14,7 +14,7 @@ uniform sampler2D tex2;
 void main() 
 { 
     WorldPosOut = vert_WorldPos; 
-    DiffuseOut.rgb = texture(tex1, vert_UV).rgb; 
-	DiffuseOut.a = 0;
+    DiffuseOut.rgb = texture(tex1, vert_UV).rgb;
+	DiffuseOut.a = texture(tex2, vert_UV).r;
     NormalOut = normalize(vert_Norm); 
 }

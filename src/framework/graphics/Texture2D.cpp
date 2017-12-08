@@ -39,6 +39,7 @@ namespace Framework
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
 		glGenerateMipmap(GL_TEXTURE_2D);
+		unbind();
 	}
 
 	void Texture2D::bind() const

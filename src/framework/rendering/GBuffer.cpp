@@ -11,8 +11,8 @@ namespace Framework
 		position.type = GL_FLOAT;
 
 		FBOAttachment diffuse;
-		diffuse.internalFormat = GL_RGB32F;
-		diffuse.format = GL_RGB;
+		diffuse.internalFormat = GL_RGBA32F;
+		diffuse.format = GL_RGBA;
 		diffuse.type = GL_FLOAT;
 
 		FBOAttachment normal;
@@ -26,8 +26,8 @@ namespace Framework
 		depthAndStencil.type = GL_UNSIGNED_INT_24_8;
 
 		FBOAttachment finalTex;
-		finalTex.internalFormat = GL_RGBA;
-		finalTex.format = GL_RGB;
+		finalTex.internalFormat = GL_RGBA32F;
+		finalTex.format = GL_RGBA;
 		finalTex.type = GL_FLOAT;
 
 		FramebufferBuilder b = FramebufferBuilder(width, height, GL_DRAW_FRAMEBUFFER)

@@ -10,6 +10,7 @@
 #include "framework/graphics/Mesh.h"
 #include "OBJLoad.h"
 #include "framework/graphics/Texture2D.h"
+#include "framework/graphics/Cubemap.h"
 
 namespace Framework
 {
@@ -127,6 +128,18 @@ namespace Framework
 
 		Texture2D *tex = new Texture2D(path);
 		Resource<Texture2D*>* res = new Resource<Texture2D*>(tex, span);
+		_resources[std::string(path)] = res;
+
+		return res->data;
+	}
+
+	template<>
+	inline Cubemap* ResourceManager::Load(const char* path, ResourceLifespan span)
+	{
+		CHECK_CACHE(path, Resource<Cubemap*>);
+
+		Cubemap *cubemap = new Cubemap(path);
+		Resource<Cubemap*>* res = new Resource<Cubemap*>(cubemap, span);
 		_resources[std::string(path)] = res;
 
 		return res->data;

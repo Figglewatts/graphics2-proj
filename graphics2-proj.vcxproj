@@ -154,11 +154,13 @@
     <ClCompile Include="src\framework\Application.cpp" />
     <ClCompile Include="src\framework\graphics\Camera.cpp" />
     <ClCompile Include="src\framework\graphics\Color.cpp" />
+    <ClCompile Include="src\framework\graphics\Cubemap.cpp" />
     <ClCompile Include="src\framework\graphics\Framebuffer.cpp" />
     <ClCompile Include="src\framework\graphics\FramebufferBuilder.cpp" />
     <ClCompile Include="src\framework\graphics\GLContext.cpp" />
     <ClCompile Include="src\framework\graphics\Mesh.cpp" />
     <ClCompile Include="src\framework\graphics\Shader.cpp" />
+    <ClCompile Include="src\framework\graphics\Skybox.cpp" />
     <ClCompile Include="src\framework\graphics\Texture2D.cpp" />
     <ClCompile Include="src\framework\input\InputHandler.cpp" />
     <ClCompile Include="src\framework\io\OBJLoad.cpp" />
@@ -185,12 +187,14 @@
     <ClInclude Include="src\framework\ecs\Entity.h" />
     <ClInclude Include="src\framework\graphics\Camera.h" />
     <ClInclude Include="src\framework\graphics\Color.h" />
+    <ClInclude Include="src\framework\graphics\Cubemap.h" />
     <ClInclude Include="src\framework\graphics\FBOAttachment.h" />
     <ClInclude Include="src\framework\graphics\Framebuffer.h" />
     <ClInclude Include="src\framework\graphics\FramebufferBuilder.h" />
     <ClInclude Include="src\framework\graphics\GLContext.h" />
     <ClInclude Include="src\framework\graphics\Mesh.h" />
     <ClInclude Include="src\framework\graphics\Shader.h" />
+    <ClInclude Include="src\framework\graphics\Skybox.h" />
     <ClInclude Include="src\framework\graphics\Texture2D.h" />
     <ClInclude Include="src\framework\input\InputHandler.h" />
     <ClInclude Include="src\framework\io\OBJLoad.h" />
@@ -223,8 +227,12 @@
     <None Include="assets\shaders\line.vert" />
     <None Include="assets\shaders\null.frag" />
     <None Include="assets\shaders\null.vert" />
+    <None Include="assets\shaders\planetDeferred.frag" />
+    <None Include="assets\shaders\planetDeferred.vert" />
     <None Include="assets\shaders\pointLightPass.frag" />
     <None Include="assets\shaders\pointLightPass.vert" />
+    <None Include="assets\shaders\skybox.frag" />
+    <None Include="assets\shaders\skybox.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
