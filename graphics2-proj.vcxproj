@@ -168,6 +168,7 @@
     <ClCompile Include="src\framework\physics\GJK.cpp" />
     <ClCompile Include="src\framework\math\Transform.cpp" />
     <ClCompile Include="src\framework\physics\Octree.cpp" />
+    <ClCompile Include="src\framework\physics\Quickhull.cpp" />
     <ClCompile Include="src\framework\physics\Shapes.cpp" />
     <ClCompile Include="src\framework\rendering\DeferredRenderer.cpp" />
     <ClCompile Include="src\framework\rendering\GBuffer.cpp" />
@@ -204,6 +205,7 @@
     <ClInclude Include="src\framework\math\Transform.h" />
     <ClInclude Include="src\framework\math\Vertex.h" />
     <ClInclude Include="src\framework\physics\Octree.h" />
+    <ClInclude Include="src\framework\physics\Quickhull.h" />
     <ClInclude Include="src\framework\physics\Rigidbody.h" />
     <ClInclude Include="src\framework\physics\Shapes.h" />
     <ClInclude Include="src\framework\rendering\DeferredRenderer.h" />

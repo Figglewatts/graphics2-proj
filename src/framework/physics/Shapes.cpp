@@ -4,10 +4,12 @@
 
 namespace Framework
 {
-	glm::vec3 ConvexHull::support(glm::vec3 dir)
+	glm::vec3 ConvexHull::support(glm::vec3 dir, glm::mat4 model)
 	{
-		std::sort(verts.begin(), verts.end(), [dir](glm::vec3& v1, glm::vec3& v2) -> bool {
-			return glm::dot(v1, dir) > glm::dot(v2, dir);
+		// convert model-space direction to world-space
+		glm::vec3 worldDir = dir * glm::mat3(model);
+		std::sort(verts.begin(), verts.end(), [worldDir](glm::vec3& v1, glm::vec3& v2) -> bool {
+			return glm::dot(v1, worldDir) > glm::dot(v2, worldDir);
 		});
 		return verts[0];
 	}
@@ -22,9 +24,11 @@ namespace Framework
 		return sum /= verts.size();
 	}
 
-	glm::vec3 Sphere::support(glm::vec3 dir)
+	glm::vec3 Sphere::support(glm::vec3 dir, glm::mat4 model)
 	{
-		return (glm::normalize(dir) * radius);
+		// convert model-space direction to world-space
+		glm::vec3 worldDir = dir * glm::mat3(model);
+		return (glm::normalize(worldDir) * radius);
 	}
 
 	glm::vec3 Sphere::getCenter() const

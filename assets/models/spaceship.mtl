@@ -1,0 +1,113 @@
+# Blender MTL File: 'None'
+# Material Count: 10
+
+newmtl Material__110
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.374345 0.374345 0.374345
+Ke 0.000000 0.000000 0.000000
+Ni -1.000000
+d 1.000000
+illum 2
+map_Kd D:\Downloads\models\longsword\Longsword.png
+
+newmtl Material__110.001
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.374345 0.374345 0.374345
+Ke 0.000000 0.000000 0.000000
+Ni -1.000000
+d 1.000000
+illum 2
+map_Kd D:\Downloads\models\longsword\Longsword.png
+
+newmtl Material__94
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.374345 0.374345 0.374345
+Ke 0.000000 0.000000 0.000000
+Ni -1.000000
+d 0.000000
+illum 2
+map_Kd D:\Downloads\models\longsword\Longsword.png
+map_d D:\\Downloads\\models\\longsword\\LSCockpit.png
+
+newmtl Material__95
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.374345 0.374345 0.374345
+Ke 0.000000 0.000000 0.000000
+Ni -1.000000
+d 1.000000
+illum 2
+map_Kd D:\Downloads\models\longsword\Longsword.png
+
+newmtl Material__96
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.374345 0.374345 0.374345
+Ke 0.000000 0.000000 0.000000
+Ni -1.000000
+d 1.000000
+illum 2
+map_Kd D:\Downloads\models\longsword\Longsword.png
+
+newmtl Material__98
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.374345 0.374345 0.374345
+Ke 0.000000 0.000000 0.000000
+Ni -1.000000
+d 1.000000
+illum 2
+map_Kd D:\Downloads\models\longsword\Longsword.png
+
+newmtl Material__99
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.374345 0.374345 0.374345
+Ke 0.000000 0.000000 0.000000
+Ni -1.000000
+d 1.000000
+illum 2
+map_Kd D:\Downloads\models\longsword\Longsword.png
+
+newmtl Material__99.001
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.374345 0.374345 0.374345
+Ke 0.000000 0.000000 0.000000
+Ni -1.000000
+d 1.000000
+illum 2
+map_Kd D:\Downloads\models\longsword\Longsword.png
+
+newmtl Material__99.002
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.374345 0.374345 0.374345
+Ke 0.000000 0.000000 0.000000
+Ni -1.000000
+d 1.000000
+illum 2
+map_Kd D:\Downloads\models\longsword\Longsword.png
+
+newmtl fb_monitor
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.374345 0.374345 0.374345
+Ke 0.000000 0.000000 0.000000
+Ni -1.000000
+d 1.000000
+illum 2
+map_Kd D:\Downloads\models\longsword\Longsword.png

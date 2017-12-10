@@ -277,8 +277,8 @@ namespace Framework
 	{
 		// figure out the furthest points in either direction
 		SupportPoint ret;
-		ret.supA = A.toWorld->convert(A.shape->support(dir));
-		ret.supB = B.toWorld->convert(B.shape->support(-dir));
+		ret.supA = A.toWorld->convert(A.shape->support(dir, A.toWorld->matrix()));
+		ret.supB = B.toWorld->convert(B.shape->support(-dir, B.toWorld->matrix()));
 		ret.v = ret.supA - ret.supB;
 		return ret;
 	}

@@ -31,6 +31,7 @@ namespace Framework
 		void bind() const;
 		void unbind() const;
 		void render() const;
+		const std::vector<glm::vec3> points() const;
 	};
 }
 

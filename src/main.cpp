@@ -24,7 +24,7 @@ const double dt = 1.0 / 60.0;
 double currentTime = glfwGetTime();
 double accumulator = 0.0;
 
-Camera cam = Camera({ -5.f, 0, 0 }, { 0, 1, 0 }, 0, 0);
+Camera cam = Camera({ -20.f, 0, 0 }, { 0, 1, 0 }, 0, 0);
 glm::mat4 projection;
 DeferredRenderer *renderer;
 
@@ -32,6 +32,7 @@ Scene scene;
 Skybox *spaceBackdrop;
 
 Renderable *earth;
+Renderable *spaceship;
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
@@ -51,46 +52,53 @@ void update(double delta)
 	float speed = 0.2f;
 	if (InputHandler::checkButton("Up", ButtonState::HELD))
 	{
-		camPos += cam.front() * speed;
+		//camPos += cam.front() * speed;
+		spaceship->transform().translate(spaceship->transform().up() * speed);
 	}
 	else if (InputHandler::checkButton("Down", ButtonState::HELD))
 	{
-		camPos -= cam.front() * speed;
+		//camPos -= cam.front() * speed;
+		spaceship->transform().translate(spaceship->transform().up() * -speed);
 	}
 
 	if (InputHandler::checkButton("Left", ButtonState::HELD))
 	{
-		camPos -= cam.right() * speed;
+		//camPos -= cam.right() * speed;
+		spaceship->transform().translate(spaceship->transform().right() * -speed);
 	}
 	else if (InputHandler::checkButton("Right", ButtonState::HELD))
 	{
-		camPos += cam.right() * speed;
+		//camPos += cam.right() * speed;
+		spaceship->transform().translate(spaceship->transform().right() * speed);
 	}
 
-	cam.set_position(camPos);
+	cam.set_position(spaceship->transform().position() + glm::vec3(0, 5, 0) - cam.front() * 40.f);
+	//cam.set_rotation(-glm::degrees(spaceship->transform().rotEuler().y), -glm::degrees(spaceship->transform().rotEuler().x));
+
 	float yaw = cam.yaw();
 	float pitch = cam.pitch();
 	if (InputHandler::checkButton("RotLeft", ButtonState::HELD))
 	{
-		yaw -= speed;
+		//yaw -= speed;
+		spaceship->transform().rotate({ 0, speed, 0});
 	}
 	else if (InputHandler::checkButton("RotRight", ButtonState::HELD))
 	{
-		yaw += speed;
+		//yaw += speed;
+		spaceship->transform().rotate({ 0, -speed, 0 });
 	}
 
 	if (InputHandler::checkButton("RotUp", ButtonState::HELD))
 	{
-		pitch += speed;
+		//pitch += speed;
+		spaceship->transform().rotate({ speed, 0, 0});
 	}
 	else if (InputHandler::checkButton("RotDown", ButtonState::HELD))
 	{
-		pitch -= speed;
+		//pitch -= speed;
+		spaceship->transform().rotate({-speed, 0, 0});
 	}
-
 	cam.set_rotation(yaw, pitch);
-
-	earth->transform().rotate(glm::angleAxis((float)delta, glm::vec3(0, 1, 0)));
 }
 
 void init()
@@ -114,8 +122,8 @@ void init()
 	DirectionalLight dirLight;
 	dirLight.diffuse = Color::WHITE;
 	dirLight.ambient = { 0.4f, 0.4f, 0.4f, 1 }; // grey
-	dirLight.direction = { 180, 0, 0 };
-	dirLight.intensity = 0.01f;
+	dirLight.direction = { 180, -45, 0 };
+	dirLight.intensity = 0.005f;
 	renderer->setDirLight(dirLight);
 
 	Shader *shader = ResourceManager::Load<Shader>("assets/shaders/basicDeferred");
@@ -127,10 +135,22 @@ void init()
 	Mesh *planetMesh = ResourceManager::Load<Mesh>("assets/models/planet.obj");
 	Texture2D *earthTex = ResourceManager::Load<Texture2D>("assets/textures/earthmap1k.png");
 	Texture2D *earthSpecTex = ResourceManager::Load<Texture2D>("assets/textures/earthspec1k.png");
-	earth = new Renderable(planetMesh, planetShader, earthTex, true);
+	Sphere *earthCollider = new Sphere();
+	earthCollider->radius = 1;
+	earth = new Renderable(planetMesh, planetShader, earthTex, earthCollider);
 	earth->addTexture(earthSpecTex);
 	earth->transform().scale(glm::vec3(4));
+	earth->collisionResponse() = false;
 	scene.add(earth);
+
+	Mesh *spaceshipMesh = ResourceManager::Load<Mesh>("assets/models/spaceship.obj");
+	Mesh *spaceshipColMesh = ResourceManager::Load<Mesh>("assets/models/spaceship-collider.obj");
+	Texture2D *spaceshipTex = ResourceManager::Load<Texture2D>("assets/textures/spaceship.png");
+	ConvexHull *spaceshipHull = new ConvexHull();
+	spaceshipHull->verts = spaceshipColMesh->points();
+	spaceship = new Renderable(spaceshipMesh, shader, spaceshipTex, spaceshipHull);
+	spaceship->transform().translate({ -20, 0, 0 });
+	scene.add(spaceship);
 }
 
 int main()
@@ -163,8 +183,8 @@ int main()
 		while (accumulator >= dt)
 		{
 			InputHandler::handleInput();
-			update(frameTime);
 			scene.update(frameTime);
+			update(frameTime);
 			accumulator -= dt;
 			t += dt;
 		}

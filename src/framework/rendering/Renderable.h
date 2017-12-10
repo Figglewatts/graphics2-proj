@@ -8,6 +8,7 @@
 #include "framework/math/Transform.h"
 #include "framework/physics/Rigidbody.h"
 #include "framework/physics/GJK.h"
+#include <iostream>
 
 namespace Framework
 {
@@ -19,6 +20,7 @@ namespace Framework
 		std::vector<Texture2D*> _textures;
 		Transform _transform;
 		bool _collision;
+		bool _collisionResponse;
 		Rigidbody *_pRigidbody;
 
 		AABB calculateBoundingVolume() const;
@@ -37,15 +39,13 @@ namespace Framework
 		const std::vector<glm::vec3> rigidbody_points() const;
 		Rigidbody *rigidbody() const { return _pRigidbody; }
 		bool collideable() const { return _collision; }
+		bool& collisionResponse() { return _collisionResponse; }
 		void addTexture(Texture2D *tex) { _textures.push_back(tex); }
 		std::vector<Texture2D*>& textures() { return _textures; }
 
 		virtual void draw(glm::mat4 view, glm::mat4 proj) const;
 		virtual void update(double delta) {}
-		virtual void onCollide(Collision c, const Rigidbody *body)
-		{
-			_transform.translate(c.normal * c.depth);
-		}
+		virtual void onCollide(Collision c, const Rigidbody *body);
 	};
 }
 

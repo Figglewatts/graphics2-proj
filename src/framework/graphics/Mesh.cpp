@@ -63,4 +63,15 @@ namespace Framework
 		this->unbind();
 	}
 
+	const std::vector<glm::vec3> Mesh::points() const
+	{
+		std::vector<glm::vec3> _points;
+		for (const auto& v : _verts)
+		{
+			//const glm::vec4 worldPos = glm::vec4(v.Position, 1) * glm::transpose(_transform.matrix());
+			_points.push_back(v.Position);
+		}
+		return _points;
+	}
+
 }

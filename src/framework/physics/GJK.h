@@ -67,8 +67,8 @@ namespace Framework
 		~GJK() = delete;
 		GJK& operator=(const GJK& other) = delete;
 
-		static const int GJK_MAX_STEPS = 50;
-		static const int EPA_MAX_STEPS = 50;
+		static const int GJK_MAX_STEPS = 64;
+		static const int EPA_MAX_STEPS = 92;
 		static const float EPA_EXIT_THRESHOLD;
 		static const float GJK_EPSILON;
 
