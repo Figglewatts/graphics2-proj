@@ -18,6 +18,8 @@ void Spaceship::update(double delta)
 	{
 		if (_moveSpeed > 0)
 			_moveSpeed -= _speedup;
+		else
+			_moveSpeed = 0;
 	}
 
 	if (InputHandler::checkButton("RollLeft", ButtonState::HELD))

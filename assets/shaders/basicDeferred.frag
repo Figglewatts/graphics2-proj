@@ -10,6 +10,10 @@ layout (location = 2) out vec3 NormalOut;
 
 uniform sampler2D tex1;
 uniform sampler2D tex2;
+uniform sampler2D tex3;
+uniform sampler2D tex4;
+
+uniform vec3 ViewPos;
 
 void main() 
 { 

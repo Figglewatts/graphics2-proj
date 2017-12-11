@@ -2,6 +2,8 @@
 
 namespace Framework
 {
+	Camera **Renderable::activeCamera;
+	
 	AABB Renderable::calculateBoundingVolume() const
 	{
 		glm::vec3 max = glm::vec3(0);
@@ -67,6 +69,9 @@ namespace Framework
 		_pShader->setUniform("ProjectionMatrix", proj, false);
 		_pShader->setUniform("tex1", 0);
 		_pShader->setUniform("tex2", 1);
+		_pShader->setUniform("tex3", 2);
+		_pShader->setUniform("tex4", 3);
+		_pShader->setUniform("ViewPos", (*activeCamera)->transform().position());
 		for (int i = 0; i < _textures.size(); i++)
 		{
 			glActiveTexture(GL_TEXTURE0 + i);

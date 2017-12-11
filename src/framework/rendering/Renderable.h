@@ -9,6 +9,7 @@
 #include "framework/physics/Rigidbody.h"
 #include "framework/physics/GJK.h"
 #include <iostream>
+#include "framework/graphics/Camera.h"
 
 namespace Framework
 {
@@ -23,6 +24,7 @@ namespace Framework
 		bool _collisionResponse;
 		Rigidbody *_pRigidbody;
 		bool _active;
+		static Camera **activeCamera;
 
 		AABB calculateBoundingVolume() const;
 	public:
@@ -45,6 +47,7 @@ namespace Framework
 		std::vector<Texture2D*>& textures() { return _textures; }
 		void setActive(bool state) { _active = state; }
 		bool isActive() const { return _active; }
+		static void setActiveCamera(Camera **cam) { activeCamera = cam; }
 
 		virtual void draw(glm::mat4 view, glm::mat4 proj) const;
 		virtual void update(double delta) {}

@@ -37,13 +37,14 @@ DeferredRenderer *renderer;
 
 float pilotViewHorizAngle = 0;
 float pilotViewVertAngle = 0;
-float mouseSpeed = 0.0010f;
+float mouseSpeed = 0.0011f;
 glm::vec3 pilotPos;
 
 Scene scene;
 Skybox *spaceBackdrop;
 
 Planet *earth;
+Planet *moon;
 Spaceship *spaceship;
 Renderable *spaceshipCockpit;
 
@@ -53,7 +54,7 @@ PointLight *cockpitLight2;
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
 	app->get_context().viewport(0, 0, width, height);
-	projection = glm::perspective(glm::radians(45.f), (float)width / (float)height, 0.1f, 10000.f);
+	projection = glm::perspective(glm::radians(45.f), (float)width / (float)height, 0.1f, 50000.f);
 	renderer->resize({ width, height });
 	currentSize = { width, height };
 }
@@ -111,7 +112,7 @@ void checkCameraKeys()
 
 void update(double delta)
 {
-	shipCam.transform().setPosition(spaceship->transform().position() - (spaceship->transform().forward() * 50.f * (1 + abs(spaceship->getCurrentSpeed()) / 4)) + (spaceship->transform().up() * 10.f));
+	shipCam.transform().setPosition(spaceship->transform().position() - (spaceship->transform().forward() * 50.f * (1 + abs(spaceship->getCurrentSpeed()) / 16)) + (spaceship->transform().up() * 10.f));
 	shipCam.setLookAt(spaceship->transform().position(), spaceship->transform().up());
 	
 	earthCam.setLookAt(spaceship->transform().position(), glm::vec3(0, 1, 0));
@@ -183,17 +184,28 @@ void init()
 	Mesh *planetMesh = ResourceManager::Load<Mesh>("assets/models/planet-highp.obj");
 	Texture2D *earthTex = ResourceManager::Load<Texture2D>("assets/textures/earthmap1k.png");
 	Texture2D *earthSpecTex = ResourceManager::Load<Texture2D>("assets/textures/earthspec1k.png");
-	earth = new Planet(planetMesh, planetShader, earthTex, earthSpecTex, 1000);
-	earth->transform().rotate({ 0, glm::radians(90.f), 0 });
+	Texture2D *earthDetailTex = ResourceManager::Load<Texture2D>("assets/textures/detail/grass.png");
+	earth = new Planet(planetMesh, planetShader, earthTex, earthSpecTex, 5000);
+	earth->addTexture(earthDetailTex);
+	earth->transform().rotate({ 0, glm::radians(240.f), 0 });
 	scene.add(earth);
 
 	earthCam.transform().setPosition(earth->transform().position());
+
+	Texture2D *moonTex = ResourceManager::Load<Texture2D>("assets/textures/moonmap1k.png");
+	Texture2D *moonSpecTex = ResourceManager::Load<Texture2D>("assets/textures/moonspec1k.png");
+	Texture2D *moonDetailTex = ResourceManager::Load<Texture2D>("assets/textures/detail/dirt.png");
+	moon = new Planet(planetMesh, planetShader, moonTex, moonSpecTex, 1000);
+	moon->addTexture(moonDetailTex);
+	moon->transform().translate(glm::vec3(0, 0, 15000));
+	scene.add(moon);
 
 	Mesh *spaceshipMesh = ResourceManager::Load<Mesh>("assets/models/spaceship.obj");
 	Mesh *spaceshipColMesh = ResourceManager::Load<Mesh>("assets/models/spaceship-collider.obj");
 	Texture2D *spaceshipTex = ResourceManager::Load<Texture2D>("assets/textures/spaceship.png");
 	spaceship = new Spaceship(spaceshipMesh, shader, spaceshipTex, spaceshipColMesh);
-	spaceship->transform().translate({ -10000, 0, 0 });
+	spaceship->transform().translate({ -2500, 0, 0 });
+	spaceship->transform().rotate({ glm::radians(-90.f), 0, 0 });
 	scene.add(spaceship);
 
 	Mesh *spaceshipCockpitMesh = ResourceManager::Load<Mesh>("assets/models/spaceship-cockpit.obj");
@@ -203,6 +215,8 @@ void init()
 	scene.add(spaceshipCockpit);
 
 	spaceship->setPilotViewDir(spaceship->transform().forward());
+
+	Renderable::setActiveCamera(&currentCamera);
 }
 
 int main()
@@ -211,7 +225,7 @@ int main()
 		3, 2, initialSize.x, initialSize.y);
 	currentSize = initialSize;
 
-	projection = glm::perspective(glm::radians(45.f), (float)initialSize.x / (float)initialSize.y, 0.1f, 10000.f);;
+	projection = glm::perspective(glm::radians(45.f), (float)initialSize.x / (float)initialSize.y, 0.1f, 50000.f);;
 
 	glfwSetFramebufferSizeCallback(app->get_window(), framebuffer_size_callback);
 	glfwSetWindowSizeCallback(app->get_window(), framebuffer_size_callback);

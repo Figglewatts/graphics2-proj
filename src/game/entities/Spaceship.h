@@ -9,8 +9,8 @@ class Spaceship : public Renderable
 {
 private:
 	float _moveSpeed = 0.f;
-	const float _speedup = 0.05f;
-	const float _maxMoveSpeed = 6.f;
+	const float _speedup = 0.1f;
+	const float _maxMoveSpeed = 16.f;
 	const float _rollSpeed = glm::radians(0.9f);
 	const float _pitchSpeed = glm::radians(0.4f);
 	glm::vec3 _pilotViewDir;
