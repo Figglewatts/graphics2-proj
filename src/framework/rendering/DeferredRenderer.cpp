@@ -54,10 +54,12 @@ namespace Framework
 			PointLightPass(pointLight);
 		}
 
+		glDisable(GL_STENCIL_TEST);
+
 		DirectionalLightPass();
 
 		FinalPass();
-
+		
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
 		glm::ivec2 size = this->_gBuffer->get_framebuffer()->size();
@@ -143,7 +145,7 @@ namespace Framework
 		_dirLightShader->setUniform("light.diffuse", _dirLight.diffuse);
 		_dirLightShader->setUniform("light.ambient", _dirLight.ambient);
 		_dirLightShader->setUniform("light.intensity", _dirLight.intensity);
-		_dirLightShader->setUniform("ViewPos", _pCamera->get_position());
+		_dirLightShader->setUniform("ViewPos", _pCamera->transform().position());
 
 		glDisable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
@@ -153,6 +155,7 @@ namespace Framework
 		_directionalLightBoundingQuad->render();
 		_dirLightShader->unbind();
 
+		glCullFace(GL_BACK);
 		glDisable(GL_BLEND);
 	}
 
@@ -181,6 +184,8 @@ namespace Framework
 		_nullShader->setUniform("ModelMatrix", model, false);
 		_pointLightBoundingSphere->render();
 		_nullShader->unbind();
+
+		glEnable(GL_CULL_FACE);
 	}
 
 	void DeferredRenderer::FinalPass()

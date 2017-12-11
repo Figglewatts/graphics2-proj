@@ -2,6 +2,7 @@
 
 #include "framework/physics/AABB.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
@@ -11,6 +12,11 @@ namespace Framework
 	glm::vec3 Transform::forward_ = { 0, 0, 1 };
 	glm::vec3 Transform::right_ = { 1, 0, 0 };
 	
+	void Transform::recomputeMatrix()
+	{
+		this->_matrix = glm::translate(_position) * glm::toMat4(_rotation) * glm::scale(_scale);
+	}
+
 	glm::mat4 Transform::matrix() const
 	{
 		/*auto rotMat = glm::rotate(_rotation.z, glm::vec3(0, 0, 1));
@@ -55,6 +61,20 @@ namespace Framework
 		return glm::normalize(glm::mat3(matrix()) * right_);
 	}
 
+	Transform & Transform::setPosition(glm::vec3 position)
+	{
+		this->_position = position;
+		this->_matrix = glm::translate(glm::mat4(1), position) * glm::mat4(glm::mat3(_matrix));
+		return *this;
+	}
+
+	Transform & Transform::setRotation(glm::quat rotation)
+	{
+		this->_rotation = rotation;
+		recomputeMatrix();
+		return *this;
+	}
+
 	Transform & Transform::translate(glm::vec3 t)
 	{
 		this->_position += t;
@@ -69,19 +89,24 @@ namespace Framework
 		return *this;
 	}
 
-	/*Transform & Transform::rotate(glm::quat rot)
+	Transform & Transform::rotate(glm::quat rot, bool local)
 	{
 		this->_rotation *= rot;
-		this->_matrix = this->_matrix * glm::toMat4(rot);
+		if (local)
+			this->_matrix = this->_matrix * glm::toMat4(rot);
+		else
+			this->_matrix = glm::toMat4(rot) * this->_matrix;
 		return *this;
-	}*/
+	}
 
-	Transform & Transform::rotate(glm::vec3 euler, bool local)
+	Transform & Transform::rotate(glm::vec3 euler, bool local, glm::mat3 *retMat)
 	{
-		this->_rotation += euler;
+		this->_rotation *= glm::quat(euler);
 		auto rotMat = glm::rotate(euler.x, glm::vec3(1, 0, 0));
 		rotMat *= glm::rotate(euler.y, glm::vec3(0, 1, 0));
 		rotMat *= glm::rotate(euler.z, glm::vec3(0, 0, 1));
+		if (retMat != nullptr)
+			*retMat = rotMat;
 		if (local)
 		{
 			this->_matrix = this->_matrix * rotMat;

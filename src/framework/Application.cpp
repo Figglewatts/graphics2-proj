@@ -26,6 +26,7 @@ namespace Framework
 			glfwTerminate();
 			throw std::runtime_error("GLAD could not be initialized");
 		}
+		_glContext.viewport(0, 0, width, height);
 	}
 
 	Application::~Application()

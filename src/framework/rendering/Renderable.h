@@ -22,6 +22,7 @@ namespace Framework
 		bool _collision;
 		bool _collisionResponse;
 		Rigidbody *_pRigidbody;
+		bool _active;
 
 		AABB calculateBoundingVolume() const;
 	public:
@@ -42,10 +43,12 @@ namespace Framework
 		bool& collisionResponse() { return _collisionResponse; }
 		void addTexture(Texture2D *tex) { _textures.push_back(tex); }
 		std::vector<Texture2D*>& textures() { return _textures; }
+		void setActive(bool state) { _active = state; }
+		bool isActive() const { return _active; }
 
 		virtual void draw(glm::mat4 view, glm::mat4 proj) const;
 		virtual void update(double delta) {}
-		virtual void onCollide(Collision c, const Rigidbody *body);
+		virtual void onCollide(Collision c, const Rigidbody *body) {};
 	};
 }
 

@@ -7,7 +7,7 @@ using namespace Framework;
 class Planet : public Renderable
 {
 public:
-	Planet(Mesh *mesh, Shader *shader, Texture2D *tex, Texture2D *specularTex, Transform t = Transform())
+	Planet(Mesh *mesh, Shader *shader, Texture2D *tex, Texture2D *specularTex, float scale, Transform t = Transform())
 		: Renderable(mesh, shader, tex, t)
 	{
 		_collision = true;
@@ -16,6 +16,7 @@ public:
 		Sphere *collisionSphere = new Sphere();
 		collisionSphere->radius = 1;
 		_pRigidbody = new Rigidbody(std::unique_ptr<Shape>(collisionSphere), &_transform);
+		_transform.scale(glm::vec3(scale));
 	}
 
 	void draw(glm::mat4 view, glm::mat4 proj) const override;

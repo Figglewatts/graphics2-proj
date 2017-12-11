@@ -177,6 +177,8 @@
     <ClCompile Include="src\framework\util\Convenience.cpp" />
     <ClCompile Include="src\framework\util\LineDrawer.cpp" />
     <ClCompile Include="src\framework\util\Logger.cpp" />
+    <ClCompile Include="src\game\entities\Planet.cpp" />
+    <ClCompile Include="src\game\entities\Spaceship.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +219,8 @@
     <ClInclude Include="src\framework\util\Convenience.h" />
     <ClInclude Include="src\framework\util\LineDrawer.h" />
     <ClInclude Include="src\framework\util\Logger.h" />
+    <ClInclude Include="src\game\entities\Planet.h" />
+    <ClInclude Include="src\game\entities\Spaceship.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\basic.frag" />

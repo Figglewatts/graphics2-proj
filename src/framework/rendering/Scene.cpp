@@ -27,7 +27,8 @@ namespace Framework
 	{
 		for (const auto& obj : _objects)
 		{
-			obj->draw(view, proj);
+			if (obj->isActive())
+				obj->draw(view, proj);
 		}
 	}
 
